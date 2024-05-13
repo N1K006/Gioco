@@ -209,6 +209,7 @@ namespace Plants_Vs_Zombies
                         if (Mappa_zombie[lis][zom] != null)
                             Mappa_zombie[lis][zom].Vita = 0;
 
+
                 for (int i = 0; i < Seme.semi.Count(); i++)
                     Seme.semi[i].Stop();
 
@@ -218,6 +219,8 @@ namespace Plants_Vs_Zombies
 
                 for (int i = 0; i < Moneta.monete.Count(); i++)
                     Moneta.monete[i].Stop();
+
+                System.Threading.Thread.Sleep(2);
 
                 zombie = new Zombie[]{ new ZombieOrdinario(0f),
                                        new ZombieSegnaletico(0f) };
@@ -273,7 +276,7 @@ namespace Plants_Vs_Zombies
                 int Y = y - 10;
                 int aux = Y % 65;
                 Y /= 65;
-                if (Y < 8)
+                if (Y < 8 && Lista_piante[Y] != null)
                     if (aux > 57 || y - 10 < 0 || !Lista_piante[Y].GetInstace().Disponibile())
                         Y = 8;
 
@@ -456,16 +459,18 @@ namespace Plants_Vs_Zombies
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    Lista_piante[i].DisegnaLista(new Vector2f(25, 65 * i + 10), yLista == i ? new Vector2f(0.36f, 0.36f) :
-                                                                                              new Vector2f(0.34f, 0.34f));
+                    if (Lista_piante[i] != null)
+                        Lista_piante[i].DisegnaLista(new Vector2f(25, 65 * i + 10), yLista == i ? new Vector2f(0.36f, 0.36f) :
+                                                                                                  new Vector2f(0.34f, 0.34f));
 
-                    if (!Lista_piante[i].GetInstace().Disponibile())
-                    {
-                        RectangleShape rect = new RectangleShape(new Vector2f(115, 58));
-                        rect.FillColor = new Color(100, 100, 100, 150);
-                        rect.Position = new Vector2f(25, 65 * i + 10);
-                        Finestra.Draw(rect);
-                    }
+                    if (Lista_piante[i] != null)
+                        if (!Lista_piante[i].GetInstace().Disponibile())
+                        {
+                            RectangleShape rect = new RectangleShape(new Vector2f(115, 58));
+                            rect.FillColor = new Color(100, 100, 100, 150);
+                            rect.Position = new Vector2f(25, 65 * i + 10);
+                            Finestra.Draw(rect);
+                        }
                 }
             }
             // Soli, monete e semi

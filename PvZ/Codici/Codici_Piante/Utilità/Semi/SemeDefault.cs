@@ -36,6 +36,7 @@ namespace Plants_Vs_Zombies
 
         protected override void Mov_Seme_Elapsed(object sender, ElapsedEventArgs e)
         {
+           
             circle.Position = new Vector2f(circle.Position.X + velocita, circle.Position.Y);
             if (circle.Position.X >= 1060)
             {
@@ -104,6 +105,7 @@ namespace Plants_Vs_Zombies
         public override void Stop()
         {
             Mov_Seme.Stop();
+            Mov_Seme.Close();
             semi.Remove(this);
         }
     }

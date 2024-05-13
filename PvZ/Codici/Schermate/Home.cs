@@ -10,7 +10,7 @@ namespace Plants_Vs_Zombies
 {
     static class Home
     {
-        static public RenderWindow Finestra;
+        static public RenderWindow Finestra = null;
 
         #region SFML
         // Immagine HOME
@@ -38,62 +38,49 @@ namespace Plants_Vs_Zombies
 
         static Pianta[] piante = new Pianta[] { Program.piante_ottenute[0],
                                                 Program.piante_ottenute[1],
-                                                Program.piante_ottenute[2],
-                                                Program.piante_ottenute[3],
-                                                Program.piante_ottenute[4],
-                                                Program.piante_ottenute[5],
-                                                Program.piante_ottenute[6],
-                                                Program.piante_ottenute[7]};
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null};
 
         public static void home(out Pianta[] piante)
         {
-            try
+            Finestra.SetVerticalSyncEnabled(true);
+            Finestra.Closed += (sender, args) => Finestra.Close();
+            Finestra.MouseButtonPressed -= MouseClick;
+            Finestra.MouseButtonPressed += MouseClick;
+            while (Finestra.IsOpen && Program.fase == 0)
             {
-                Finestra.SetVerticalSyncEnabled(true);
-                Finestra.Closed += (sender, args) => Finestra.Close();
-                Finestra.MouseButtonPressed -= MouseClick;
-                Finestra.MouseButtonPressed += MouseClick; 
-                while (Finestra.IsOpen && Program.fase == 0)
+
+                Finestra.Clear();
+                Finestra.DispatchEvents();
+
+                switch (schermata)
                 {
-
-                    Finestra.Clear();
-                    Finestra.DispatchEvents();
-
-                    switch (schermata)
-                    {
-                        case 0:
-                            Disegna();
-                            break;
-                        case 1: //impostazioni
-                            Impostazioni.impostazioni();
-                            Finestra.MouseButtonPressed -= Impostazioni.MouseClick;
-                            Finestra.MouseButtonPressed += MouseClick;
-                            break;
-                        case 2: //shop
-                            Shop.shop();
-                            Finestra.MouseButtonPressed -= Shop.MouseClick;
-                            Finestra.MouseButtonPressed += MouseClick;
-                            break;
-                        case 3: //piante
-                            Piante.SelezionaPiante(ref Home.piante);
-                            Finestra.MouseButtonPressed -= Piante.MouseClick;
-                            Finestra.MouseButtonPressed += MouseClick;
-                            break;
-                    }
-                    Finestra.Display();
+                    case 0:
+                        Disegna();
+                        break;
+                    case 1: //impostazioni
+                        Impostazioni.impostazioni();
+                        Finestra.MouseButtonPressed -= Impostazioni.MouseClick;
+                        Finestra.MouseButtonPressed += MouseClick;
+                        break;
+                    case 2: //shop
+                        Shop.shop();
+                        Finestra.MouseButtonPressed -= Shop.MouseClick;
+                        Finestra.MouseButtonPressed += MouseClick;
+                        break;
+                    case 3: //piante
+                        Piante.SelezionaPiante(ref Home.piante);
+                        Finestra.MouseButtonPressed -= Piante.MouseClick;
+                        Finestra.MouseButtonPressed += MouseClick;
+                        break;
                 }
-                piante = Home.piante;
+                Finestra.Display();
             }
-            catch(TypeInitializationException)
-            {
-
-            }
-            
-            
-
-           
-
-            
+            piante = Home.piante;
         }
 
         public static void MouseClick(object sender, MouseButtonEventArgs e)
@@ -188,8 +175,9 @@ namespace Plants_Vs_Zombies
 
                         for (int y = 0; y < 2; y++)
                             for (int x = 0; x < 4; x++)
-                                piante[4 * y + x].DisegnaLista(new Vector2f(203 + (637 - larghezza) / 3 * x,
-                                                                            275 + (161 - altezza) * y), scala);
+                                if (piante[4 * y + x] != null)
+                                    piante[4 * y + x].DisegnaLista(new Vector2f(203 + (637 - larghezza) / 3 * x,
+                                                                                275 + (161 - altezza) * y), scala);
                     }
                 }
             }

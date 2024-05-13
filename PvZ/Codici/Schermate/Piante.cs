@@ -12,10 +12,10 @@ namespace Plants_Vs_Zombies
 	{
 		static public RenderWindow Finestra;
 
-		static public Pianta[] piante; //piante selezionate
-		static public List<Pianta> Lpiante = new();
+		static public Pianta[] PianteSelezionate; //piante selezionate
+		static public List<Pianta> PianteDisponibili = new();
 
-		static Pianta p = null; // pianta selezionata
+		static Pianta piantaSelezionata = null; // pianta selezionata
 
 		public static void Disegna()
 		{
@@ -24,15 +24,15 @@ namespace Plants_Vs_Zombies
 			Finestra.Draw(Home.HOME);
 			Finestra.Draw(Home.INDIETRO);
 
-            RectangleShape cornicetta = new RectangleShape(new Vector2f(1035, 440))
-            {
-                Position = new Vector2f(5, 142),
-                FillColor = new Color(0, 0, 0)
-            };
-            Finestra.Draw(cornicetta);
+			RectangleShape cornicetta = new RectangleShape(new Vector2f(1035, 440))
+			{
+				Position = new Vector2f(5, 142),
+				FillColor = new Color(0, 0, 0)
+			};
+			Finestra.Draw(cornicetta);
 
-            // piante selezionate
-            {
+			// piante selezionate
+			{
 				Vector2f scala = new Vector2f(0.45f, 0.45f);
 				float larghezza = 340 * scala.X;
 				float altezza = 170 * scala.Y;
@@ -46,8 +46,8 @@ namespace Plants_Vs_Zombies
 
 				for (int y = 0; y < 4; y++)
 					for (int x = 0; x < 2; x++)
-						if (piante[2 * y + x] != null)
-							piante[2 * y + x].DisegnaLista(new Vector2f(20  + (larghezza + 20) * x, 157 + (altezza + 35) * y), scala);
+						if (PianteSelezionate[2 * y + x] != null)
+							PianteSelezionate[2 * y + x].DisegnaLista(new Vector2f(20  + (larghezza + 20) * x, 157 + (altezza + 35) * y), scala);
 						else
 						{
 							RectangleShape n = new RectangleShape(new Vector2f(larghezza, altezza))
@@ -75,21 +75,21 @@ namespace Plants_Vs_Zombies
 				Finestra.Draw(rect);
 
 				for (int x = 0; x < nx; x++)
-					for (int y = 0; nx * y + x < Lpiante.Count; y++)
-						Lpiante[nx * y + x].DisegnaLista(new Vector2f(383 + (larghezza + 10) * x,
+					for (int y = 0; nx * y + x < PianteDisponibili.Count; y++)
+						PianteDisponibili[nx * y + x].DisegnaLista(new Vector2f(383 + (larghezza + 10) * x,
 																			 161 + (altezza   + 15) * y), scala);
 			}
 		}
 
 		public static void SelezionaPiante(ref Pianta[] piante)
 		{
-			Lpiante.Clear();
-			Piante.piante = piante;
+			PianteDisponibili.Clear();
+			Piante.PianteSelezionate = piante;
 
 			foreach (Pianta p in Program.piante_ottenute)
-				Lpiante.Add(p);
+				PianteDisponibili.Add(p);
 			foreach (Pianta aux in piante)
-				Lpiante.Remove(aux);
+				PianteDisponibili.Remove(aux);
 
 			Finestra.MouseButtonPressed -= Home.MouseClick;
 			Finestra.MouseButtonPressed += MouseClick;
@@ -102,7 +102,7 @@ namespace Plants_Vs_Zombies
 				Finestra.DispatchEvents();
 				Finestra.Display();
 			}
-			piante = Piante.piante;
+			piante = Piante.PianteSelezionate;
 		}
 
 		public static void MouseClick(object sender, MouseButtonEventArgs e)
@@ -113,14 +113,14 @@ namespace Plants_Vs_Zombies
 			Logger.WriteLine("X: " + x.ToString() + " " + "Y: " + y, 6);
 
 			if (x >= 14 && x <= 86 && y >= 14 && y <= 86)  // tasto indietro
-            {
+			{
 				bool completo = true;
-				for (int i = 0; i < piante.Length; i++)
-                {
-					if (piante[i] == null)
+				for (int i = 0; i < PianteSelezionate.Length; i++)
+				{
+					if (PianteSelezionate[i] == null)
 						completo = false;
-                }
-				if (completo)
+				}
+				if (completo || PianteDisponibili.Count == 0)
 					Home.schermata = 0;
 			}
 			else if(x >= 20 && x <= 345) // piante selezionate
@@ -141,17 +141,17 @@ namespace Plants_Vs_Zombies
 					n = 2 * Y + X;
 
 				if (n < 8)
-					if (piante[n] != null)
+					if (PianteSelezionate[n] != null)
 					{
-						Lpiante.Add(piante[n]);
-						piante[n] = null;
+						PianteDisponibili.Add(PianteSelezionate[n]);
+						PianteSelezionate[n] = null;
 					}
-					else if(p != null)
+					else if(piantaSelezionata != null)
 					{
-						piante[n] = p;
-						Lpiante.Remove(p);
+						PianteSelezionate[n] = piantaSelezionata;
+						PianteDisponibili.Remove(piantaSelezionata);
 					}
-				p = null;
+				piantaSelezionata = null;
 			}
 			else if (x >= 383 && x <= 1017) // altre piante
 			{
@@ -168,15 +168,15 @@ namespace Plants_Vs_Zombies
 
 				int n = -1;
 
-				if (auxX <= larghezza && auxY <= altezza)
+				if (auxX <= larghezza && auxY <= altezza && auxX > 0 && auxY > 0)
 				{
 					n = 5 * Y + X;
 				}
 
-				if(n != -1 && n < Lpiante.Count)
-					p = Lpiante[n];
+				if(n != -1 && n < PianteDisponibili.Count)
+					piantaSelezionata = PianteDisponibili[n];
 				else 
-					p = null;
+					piantaSelezionata = null;
 			}
 		}
 	}

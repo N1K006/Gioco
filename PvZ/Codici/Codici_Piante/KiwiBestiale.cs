@@ -47,6 +47,13 @@ namespace Plants_Vs_Zombies
             attesa = new Timer(15000);
             attesa.Start();
             attesa.Elapsed += attesa_Elapsed;
+            for (int i = 0; i < 8; i++)
+                if (gioco.Lista_piante[i] != null)
+                    if (gioco.Lista_piante[i] is KiwiBestiale)
+                    {
+                        gioco.n_soli -= gioco.Lista_piante[i].costo_soli;
+                        break;
+                    }
             rect = new IntRect(116, 5, 183, 225);
             texture = new Texture(@"..\..\..\Immagini\Piante\Piante\KiwiBestiale.png", rect);
             pianta.Texture = texture;

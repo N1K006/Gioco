@@ -26,7 +26,7 @@ namespace Plants_Vs_Zombies
                                           new MuroNoce(),
                                           new InfiNoce(),
                                           new CiliegeEsplosive(),
-                                          new Peperoncino(),
+                                          new Peperoncino()
                                           /*new KiwiBestiale()*/ };
 
         public static List<Pianta> piante_ottenute = new(){ new Sparasemi(), new Girasole() };
@@ -40,15 +40,7 @@ namespace Plants_Vs_Zombies
         {
             Logger.Grade = Logger.Grades.Trace;
 
-            try
-            {
-                Home.Finestra = Finestra;
-            }
-            catch(TypeInitializationException)
-            {
-
-            }
-            
+            Home.Finestra = Finestra;
             Impostazioni.Finestra = Finestra;
             Shop.Finestra = Finestra;
             Piante.Finestra = Finestra;

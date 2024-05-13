@@ -45,7 +45,13 @@ namespace Plants_Vs_Zombies
             attesa = new Timer(5000);
             attesa.Start();
             attesa.Elapsed += attesa_Elapsed;
-            gioco.n_soli -= Program.piante_ottenute[2].costo_soli;
+            for (int i = 0; i < 8; i++)
+                if (gioco.Lista_piante[i] != null)
+                    if (gioco.Lista_piante[i] is Triplasparasemi)
+                    {
+                        gioco.n_soli -= gioco.Lista_piante[i].costo_soli;
+                        break;
+                    }
 
             X = x; Y = y;
 
