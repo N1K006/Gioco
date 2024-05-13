@@ -12,7 +12,7 @@ namespace Plants_Vs_Zombies
     {
         static public RenderWindow Finestra;
 
-        static public Pianta[] piante;
+        //static public Pianta[] piante;
         static public Pianta p;
 
         public static void Disegna()
@@ -47,8 +47,8 @@ namespace Plants_Vs_Zombies
                     int nx = 5;
 
                     for (int x = 0; x < nx; x++)
-                        for (int y = 0; nx * y + x < Program.piante_ottenute.Count; y++)
-                            Program.piante_ottenute[nx * y + x].DisegnaLista(new Vector2f(325 + (larghezza + 10) * x,
+                        for (int y = 0; nx * y + x < Program.all.Length; y++)
+                            Program.all[nx * y + x].DisegnaLista(new Vector2f(325 + (larghezza + 10) * x,
                                                                                  210 + (altezza + 15) * y), scala);
                     Text shop = new Text("SHOP", Home.font, 20);
                     shop.FillColor = new Color(255, 255, 255);
@@ -122,7 +122,7 @@ namespace Plants_Vs_Zombies
                         Finestra.Draw(Gioco.C_M);  // Contatore monete
 
                         Text num_monete;
-                        if (p != null)
+                        if (p != null && !Program.piante_ottenute.Contains(p))
                         {
                             num_monete = new Text(Convert.ToString(p.costo_monete), Gioco.numeri, 13);
                             num_monete.Position = new Vector2f(105, (Finestra.Size.Y / 2) + 185);
@@ -130,10 +130,13 @@ namespace Plants_Vs_Zombies
                                 num_monete.FillColor = Color.Red;
                             else
                                 num_monete.FillColor = Color.White;
+                            Finestra.Draw(num_monete); // Numero monete
                         }
-                        else
+                        else if (p == null || Program.piante_ottenute.Contains(p))
+                        {
                             num_monete = new Text("", Home.font, 13);
-                        Finestra.Draw(num_monete); // Numero monete
+                            Finestra.Draw(num_monete); // Numero monete
+                        }
                     }
   
                     // Tasto Compra
@@ -184,7 +187,7 @@ namespace Plants_Vs_Zombies
                 Home.schermata = 0;
             else if (x >= 32 && x <= 268 && y >= 524 && y <= 578) // Tasto compra
             {
-                if (!Program.piante_ottenute.Contains(p) && Program.monete >= p.costo_monete)
+                if (!Program.piante_ottenute.Contains(p) && Gioco.numero_monete >= p.costo_monete)
                     Program.piante_ottenute.Add(p);
             }
             else if (x >= 325 && x <= 1010) // altre piante
@@ -207,8 +210,8 @@ namespace Plants_Vs_Zombies
                     n = 5 * Y + X;
                 }
 
-                if (n != -1 && n < Program.piante_ottenute.Count)
-                    p = Program.piante_ottenute[n];
+                if (n != -1 && n < Program.all.Length)
+                    p = Program.all[n];
                 else
                     p = null;
             }

@@ -81,7 +81,7 @@ namespace Plants_Vs_Zombies
 
         public int yLista = 8;
         public int x, y;
-        public int contatore = 5, n_soli = 5000, n_monete = 20;
+        public int contatore = 5, n_soli = 5000, n_monete = 1000;
         public static int numero_monete;
         public bool home = false, muto = false;
 
