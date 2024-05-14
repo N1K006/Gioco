@@ -29,10 +29,9 @@ namespace Plants_Vs_Zombies
                                           new Peperoncino()
                                           /*new KiwiBestiale()*/ };
 
-        public static List<Pianta> piante_ottenute = new(){ new Sparasemi(), new Girasole() };
+        public static List<Pianta> piante_ottenute = new(){};
 
-
-        public static int monete = 0;
+        public static int monete = 10000;
 
         public static int fase = 0;
 

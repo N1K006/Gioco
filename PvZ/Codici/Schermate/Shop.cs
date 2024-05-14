@@ -13,7 +13,15 @@ namespace Plants_Vs_Zombies
         static public RenderWindow Finestra;
 
         //static public Pianta[] piante;
+        static bool comprato = false;
         static public Pianta p;
+
+        #region SFML
+        // Immagine Lucchetto
+        public static IntRect lucchetto = new IntRect(80, 0, 431, 511);
+        public static Texture Lucchetto = new Texture(@"..\..\..\Immagini\Mappa\Lucchetto.png", lucchetto);
+        public static readonly Sprite LUCCHETTO = new Sprite(Lucchetto);
+        #endregion
 
         public static void Disegna()
         {
@@ -48,8 +56,24 @@ namespace Plants_Vs_Zombies
 
                     for (int x = 0; x < nx; x++)
                         for (int y = 0; nx * y + x < Program.all.Length; y++)
-                            Program.all[nx * y + x].DisegnaLista(new Vector2f(325 + (larghezza + 10) * x,
-                                                                                 210 + (altezza + 15) * y), scala);
+                            if (Program.piante_ottenute.Contains(Program.all[nx * y + x]))
+                                Program.all[nx * y + x].DisegnaLista(new Vector2f(325 + (larghezza + 10) * x, 210 + (altezza + 15) * y), scala);
+                            else
+                            {
+                                Program.all[nx * y + x].DisegnaLista(new Vector2f(325 + (larghezza + 10) * x, 210 + (altezza + 15) * y), scala);
+                                RectangleShape n = new RectangleShape(new Vector2f(larghezza, altezza))
+                                {
+                                    Position = new Vector2f(325 + (larghezza + 10) * x, 210 + (altezza + 15) * y),
+                                    FillColor = new Color(100, 100, 100, 200)
+                                };
+                                LUCCHETTO.Scale = new Vector2f(0.10f, 0.10f);
+                                LUCCHETTO.Origin = new Vector2f(LUCCHETTO.Texture.Size.X / 2, LUCCHETTO.Texture.Size.Y / 2);
+                                LUCCHETTO.Position = new Vector2f(325 + (larghezza + 10) * x + n.Size.X / 2, 210 + (altezza + 15) * y + n.Size.Y / 2);
+
+                                Finestra.Draw(n);
+                                Finestra.Draw(LUCCHETTO);
+                            }
+                    
                     Text shop = new Text("SHOP", Home.font, 20);
                     shop.FillColor = new Color(255, 255, 255);
                     shop.Position = new Vector2f((Finestra.Size.X / 2) + 90, (Finestra.Size.Y / 2) - 135);
@@ -97,7 +121,7 @@ namespace Plants_Vs_Zombies
                         Gioco.C_M.Position = new Vector2f(50, (Finestra.Size.Y / 2) - 35);
                         Finestra.Draw(Gioco.C_M);  // Contatore soli
 
-                        Text num_monete = new Text(Convert.ToString(Gioco.numero_monete), Gioco.numeri, 13);
+                        Text num_monete = new Text(Convert.ToString(Program.monete), Gioco.numeri, 13);
                         num_monete.FillColor = Color.White;
                         num_monete.Position = new Vector2f(130, (Finestra.Size.Y / 2) - 15);
                         Finestra.Draw(num_monete); // Numero monete
@@ -112,31 +136,35 @@ namespace Plants_Vs_Zombies
                             Finestra.Draw(rect_p);
                         }
 
-                        if (p != null)
-                            p.DisegnaLista(new Vector2f(32, 360), scala);
-
+                        Text num_monete;
                         Gioco.C_M.Origin = new Vector2f(75, 75);
                         Gioco.C_M.Scale = new Vector2f(0.35f, 0.35f);
                         Gioco.C_M.Origin = new Vector2f(0, 0);
                         Gioco.C_M.Position = new Vector2f(22, (Finestra.Size.Y / 2) + 165);
-                        Finestra.Draw(Gioco.C_M);  // Contatore monete
+                        if (p != null)
+                        {
+                            p.DisegnaLista(new Vector2f(32, 360), scala);
+                            Finestra.Draw(Gioco.C_M);  // Contatore monete
 
-                        Text num_monete;
-                        if (p != null && !Program.piante_ottenute.Contains(p))
-                        {
-                            num_monete = new Text(Convert.ToString(p.costo_monete), Gioco.numeri, 13);
-                            num_monete.Position = new Vector2f(105, (Finestra.Size.Y / 2) + 185);
-                            if (p.costo_monete > Gioco.numero_monete)
-                                num_monete.FillColor = Color.Red;
-                            else
-                                num_monete.FillColor = Color.White;
-                            Finestra.Draw(num_monete); // Numero monete
+                            for (int i = 0; i < Program.piante_ottenute.Count; i++)
+                                if (Program.piante_ottenute[i] == p)
+                                    comprato = true;
+
+                            if (!comprato)
+                            {
+                                num_monete = new Text(Convert.ToString(p.costo_monete), Gioco.numeri, 13);
+                                num_monete.Position = new Vector2f(105, (Finestra.Size.Y / 2) + 185);
+                                if (p.costo_monete > Program.monete)
+                                    num_monete.FillColor = Color.Red;
+                                else
+                                    num_monete.FillColor = Color.White;
+                                Finestra.Draw(num_monete);
+                            }
+                            else if (comprato)
+                                Finestra.Draw(new Text("", Home.font, 13));
                         }
-                        else if (p == null || Program.piante_ottenute.Contains(p))
-                        {
-                            num_monete = new Text("", Home.font, 13);
-                            Finestra.Draw(num_monete); // Numero monete
-                        }
+                        else
+                            Finestra.Draw(new Text("", Home.font, 13));
                     }
   
                     // Tasto Compra
@@ -148,12 +176,13 @@ namespace Plants_Vs_Zombies
 
                         Text compra = new Text("COMPRA", Home.font, 20);
                         compra.Position = new Vector2f(80, 543);
-                        if (p != null)
+                        if (p != null && !comprato)
                             compra.FillColor = new Color(255, 255, 255);
                         else
                             compra.FillColor = new Color(150, 150, 150);
                         Finestra.Draw(compra);
                     }
+                    comprato = false;
                 }
             }
         }
@@ -187,8 +216,11 @@ namespace Plants_Vs_Zombies
                 Home.schermata = 0;
             else if (x >= 32 && x <= 268 && y >= 524 && y <= 578) // Tasto compra
             {
-                if (!Program.piante_ottenute.Contains(p) && Gioco.numero_monete >= p.costo_monete)
+                if (!Program.piante_ottenute.Contains(p) && Program.monete >= p.costo_monete)
+                {
                     Program.piante_ottenute.Add(p);
+                    Program.monete -= p.costo_monete;
+                }
             }
             else if (x >= 325 && x <= 1010) // altre piante
             {

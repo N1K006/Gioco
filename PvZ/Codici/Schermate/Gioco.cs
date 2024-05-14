@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SFML.Window;
+using SFML.Audio;
 using System.Timers;
 
 namespace Plants_Vs_Zombies
@@ -46,6 +47,7 @@ namespace Plants_Vs_Zombies
             }
         }
         #endregion
+
         #region SFML
         // FONT
         public static Font numeri = new Font(@"..\..\..\Font\ComixLoud.ttf");
@@ -74,6 +76,11 @@ namespace Plants_Vs_Zombies
         public static readonly Sprite T_H = new Sprite(T_h);
         #endregion
 
+        #region Suoni
+        static SoundBuffer suono_gioco = new SoundBuffer(@"..\..\..\Suoni\Gioco.wav");
+        static Sound SUONO_GIOCO = new Sound(suono_gioco);
+        #endregion
+
         public Pianta[] Lista_piante;
         public Pianta[,] Mappa_piante = new Pianta[9, 5];
 
@@ -81,8 +88,7 @@ namespace Plants_Vs_Zombies
 
         public int yLista = 8;
         public int x, y;
-        public int contatore = 5, n_soli = 5000, n_monete = 1000;
-        public static int numero_monete;
+        public int contatore = 5, n_soli = 5000;
         public bool home = false, muto = false;
 
         #region Zombie
@@ -163,11 +169,6 @@ namespace Plants_Vs_Zombies
 
         void gioco()
         {
-            lock (LockMonete)
-            {
-                Moneta m = new Moneta(new Vector2f(500, 500), 0);
-            }
-
             for (int i = 0; i < 5; i++)
                 Mappa_zombie[i] = new List<Zombie>();
 
@@ -189,38 +190,51 @@ namespace Plants_Vs_Zombies
             Finestra.MouseButtonPressed += MouseClick;
             Finestra.MouseMoved += MouseMoved;
 
+            SUONO_GIOCO.Volume = 100;
+
             while (Finestra.IsOpen && Program.fase == 1)
             {
-                Finestra.Clear();
+                if (SUONO_GIOCO.Status == SoundStatus.Stopped)
+                    SUONO_GIOCO.Play();
 
+                Finestra.Clear();
                 Disegna();
                 Finestra.DispatchEvents();
                 Finestra.Display();
             }
+            SUONO_GIOCO.Stop();
 
-            { // reset
-                for (int y = 0; y < 5; y++)
-                    for (int x = 0; x < 9; x++)
-                        if (Mappa_piante[x, y] != null)
-                            Mappa_piante[x, y].Vita = -999;
+            // RESET
+            {
+                System.Threading.Thread.Sleep(3);
+                // Piante e Zombie
+                {
+                    for (int y = 0; y < 5; y++)
+                        for (int x = 0; x < 9; x++)
+                            if (Mappa_piante[x, y] != null)
+                            {
+                                Mappa_piante[x, y].Vita = -999;
+                                Mappa_piante[x, y].attesa.Close();
+                            }
 
-                for (int lis = 0; lis < 5; lis++)
-                    for (int zom = 0; zom < Mappa_zombie[lis].Count; zom++)
-                        if (Mappa_zombie[lis][zom] != null)
-                            Mappa_zombie[lis][zom].Vita = 0;
+                    for (int lis = 0; lis < 5; lis++)
+                        for (int zom = 0; zom < Mappa_zombie[lis].Count; zom++)
+                            if (Mappa_zombie[lis][zom] != null)
+                                Mappa_zombie[lis][zom].Vita = 0;
+                }
+                // Utilità
+                {
+                    for (int i = 0; i < Seme.semi.Count(); i++)
+                        Seme.semi[i].Stop();
 
+                    Sun_On_Map.Stop();
+                    for (int i = 0; i < Sole.soli.Count(); i++)
+                        Sole.soli[i].Stop();
 
-                for (int i = 0; i < Seme.semi.Count(); i++)
-                    Seme.semi[i].Stop();
-
-                Sun_On_Map.Stop();
-                for (int i = 0; i < Sole.soli.Count(); i++)
-                    Sole.soli[i].Stop();
-
-                for (int i = 0; i < Moneta.monete.Count(); i++)
-                    Moneta.monete[i].Stop();
-
-                System.Threading.Thread.Sleep(2);
+                    for (int i = 0; i < Moneta.monete.Count(); i++)
+                        Moneta.monete[i].Stop();
+                }
+                System.Threading.Thread.Sleep(3);
 
                 zombie = new Zombie[]{ new ZombieOrdinario(0f),
                                        new ZombieSegnaletico(0f) };
@@ -276,7 +290,9 @@ namespace Plants_Vs_Zombies
                 int Y = y - 10;
                 int aux = Y % 65;
                 Y /= 65;
-                if (Y < 8 && Lista_piante[Y] != null)
+                if (Lista_piante[Y] == null)
+                    Y = 8;
+                else if (Y < 8)
                     if (aux > 57 || y - 10 < 0 || !Lista_piante[Y].GetInstace().Disponibile())
                         Y = 8;
 
@@ -342,6 +358,11 @@ namespace Plants_Vs_Zombies
                 home = true;
                 muto = !muto;
                 yLista = 8;
+                
+                if (muto)
+                    SUONO_GIOCO.Volume = 0;
+                else
+                    SUONO_GIOCO.Volume = 100;
             }
             else
             {
@@ -431,12 +452,10 @@ namespace Plants_Vs_Zombies
                 C_M.Position = new Vector2f(10 + C_M.Origin.X * C_M.Scale.X, 535 + C_M.Origin.X * C_M.Scale.X);
                 Finestra.Draw(C_M);  // Contatore soli
 
-                Text num_monete = new Text(Convert.ToString(n_monete), numeri, 13);
+                Text num_monete = new Text(Convert.ToString(Program.monete), numeri, 13);
                 num_monete.FillColor = Color.White;
                 num_monete.Position = new Vector2f(80, 554.5f);
                 Finestra.Draw(num_monete); // Numero monete
-
-                numero_monete = n_monete;
             }
             // Piante nella mappa
             {

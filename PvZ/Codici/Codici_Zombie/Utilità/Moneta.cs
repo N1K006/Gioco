@@ -87,7 +87,7 @@ namespace Plants_Vs_Zombies
         public void Preso()
         {
             preso = true;
-            gioco.n_monete += valore;
+            Program.monete += valore;
             monete.Remove(this);
             monetePrese.Add(this);
         }

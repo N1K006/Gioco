@@ -1,6 +1,7 @@
 ﻿using System;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Audio;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,11 @@ namespace Plants_Vs_Zombies
         public static readonly Sprite INGRANAGGIO = new Sprite(Ingranaggio);
         #endregion
 
+        #region Suoni
+        static SoundBuffer suono_home = new SoundBuffer(@"..\..\..\Suoni\Home.wav");
+        static Sound SUONO_HOME = new Sound(suono_home);
+        #endregion
+
         static Text gioca;
         static Text shop;
         static Text seleziona_piante;
@@ -36,8 +42,8 @@ namespace Plants_Vs_Zombies
 
         static public int schermata = 0; //0 = principale, 1 = impostazioni, 2 = shop, 3 = piante
 
-        static Pianta[] piante = new Pianta[] { Program.piante_ottenute[0],
-                                                Program.piante_ottenute[1],
+        static Pianta[] piante = new Pianta[] { null,
+                                                null,
                                                 null,
                                                 null,
                                                 null,
@@ -47,12 +53,16 @@ namespace Plants_Vs_Zombies
 
         public static void home(out Pianta[] piante)
         {
+            SUONO_HOME.Volume = 100;
+            
             Finestra.SetVerticalSyncEnabled(true);
             Finestra.Closed += (sender, args) => Finestra.Close();
             Finestra.MouseButtonPressed -= MouseClick;
             Finestra.MouseButtonPressed += MouseClick;
             while (Finestra.IsOpen && Program.fase == 0)
             {
+                if (SUONO_HOME.Status == SoundStatus.Stopped)
+                    SUONO_HOME.Play();
 
                 Finestra.Clear();
                 Finestra.DispatchEvents();
@@ -80,6 +90,7 @@ namespace Plants_Vs_Zombies
                 }
                 Finestra.Display();
             }
+            SUONO_HOME.Stop();
             piante = Home.piante;
         }
 
@@ -90,13 +101,13 @@ namespace Plants_Vs_Zombies
 
             Logger.WriteLine("X: " + x.ToString() + " " + "Y: " + y, 6);
 
-            if (x >= 912 && x <= 1032 && y >= 525 && y <= 585 && schermata == 0) // tasto gioca (HOME)
+            if (x >= 912 && x <= 1032 && y >= 525 && y <= 585 && schermata == 0 && Piante.stato) // tasto gioca (HOME)
                 Program.fase = 1;
             else if (x >= 14 && x <= 86 && y >= 14 && y <= 86 && schermata == 0) // tasto impostazioni (HOME)
                 schermata = 1;
             else if (x >= 14 && x <= 134 && y >= 525 && y <= 585 && schermata == 0) // tasto shop (HOME)
                 schermata = 2;
-            else if (x >= 184 && x <= 858 && y >= 185 && y <= 454 && schermata == 0) // tasto seleziona piante (HOME)
+            else if (x >= 184 && x <= 858 && y >= 185 && y <= 454 && schermata == 0 && Program.piante_ottenute.Count > 0) // tasto seleziona piante (HOME)
                 schermata = 3;
         }
 
