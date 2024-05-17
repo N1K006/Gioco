@@ -19,6 +19,8 @@ namespace Plants_Vs_Zombies
         public object LockSoli = new object();
         public object LockMonete = new object();
 
+        public bool ricomincia = false;
+
         #region Costruttore
         static object Lock = new object();
         static Gioco instance = null;
@@ -202,10 +204,14 @@ namespace Plants_Vs_Zombies
                 Finestra.DispatchEvents();
                 Finestra.Display();
             }
-            SUONO_GIOCO.Stop();
+            Reset();
+        }
 
+        public void Reset()
+        {
             // RESET
             {
+                SUONO_GIOCO.Stop();
                 System.Threading.Thread.Sleep(3);
                 // Piante e Zombie
                 {
@@ -213,8 +219,8 @@ namespace Plants_Vs_Zombies
                         for (int x = 0; x < 9; x++)
                             if (Mappa_piante[x, y] != null)
                             {
-                                Mappa_piante[x, y].Vita = -999;
                                 Mappa_piante[x, y].attesa.Close();
+                                Mappa_piante[x, y].Vita = -999;
                             }
 
                     for (int lis = 0; lis < 5; lis++)
@@ -250,8 +256,11 @@ namespace Plants_Vs_Zombies
                 Sole.soliPresi = new List<Sole>();
                 Seme.semi = new List<Seme>();
 
-                Finestra.MouseButtonPressed -= MouseClick;
-                Finestra.MouseMoved -= MouseMoved;
+                if (!ricomincia)
+                {
+                    Finestra.MouseButtonPressed -= MouseClick;
+                    Finestra.MouseMoved -= MouseMoved;
+                }
 
                 instance = null;
                 Pianta.gioco = null;
@@ -260,6 +269,7 @@ namespace Plants_Vs_Zombies
                 Seme.gioco = null;
                 Zombie.gioco = null;
                 Moneta.gioco = null;
+                ricomincia = false;
             }
         }
 
@@ -358,11 +368,19 @@ namespace Plants_Vs_Zombies
                 home = true;
                 muto = !muto;
                 yLista = 8;
-                
+
                 if (muto)
                     SUONO_GIOCO.Volume = 0;
                 else
                     SUONO_GIOCO.Volume = 100;
+            }
+            else if (x >= 437 && x <= 606 && y >= 245 && y <= 295 && home == true) // Tasto Ricomincia
+            {
+                Paletta.presa = false;
+                home = false;
+                yLista = 8;
+                ricomincia = true;
+                Reset();
             }
             else
             {
@@ -586,9 +604,9 @@ namespace Plants_Vs_Zombies
                             rect.Position = new Vector2f(Finestra.Size.X / 2 + 62, Finestra.Size.Y / 2 + 40);
 
                             if (muto)
-                                rect.FillColor = Color.Green;
-                            else
                                 rect.FillColor = Color.Red;
+                            else
+                                rect.FillColor = Color.Green;
                             Finestra.Draw(rect);
                         }
 

@@ -96,7 +96,7 @@ namespace Plants_Vs_Zombies
 			Finestra.MouseButtonPressed -= Home.MouseClick;
 			Finestra.MouseButtonPressed += MouseClick;
 
-			while (Finestra.IsOpen && Home.schermata == 3)
+			while (Finestra.IsOpen && Home.schermata == 2)
 			{
 				Finestra.Clear();
 				Disegna();

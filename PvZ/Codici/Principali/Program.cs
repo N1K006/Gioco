@@ -40,7 +40,6 @@ namespace Plants_Vs_Zombies
             Logger.Grade = Logger.Grades.Trace;
 
             Home.Finestra = Finestra;
-            Impostazioni.Finestra = Finestra;
             Shop.Finestra = Finestra;
             Piante.Finestra = Finestra;
             Gioco.Finestra = Finestra;

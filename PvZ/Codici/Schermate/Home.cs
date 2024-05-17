@@ -40,7 +40,7 @@ namespace Plants_Vs_Zombies
         static Text seleziona_piante;
         public static Font font = new Font(@"..\..\..\Font\ComixLoud.ttf");
 
-        static public int schermata = 0; //0 = principale, 1 = impostazioni, 2 = shop, 3 = piante
+        static public int schermata = 0; //0 = principale, 1 = shop, 2 = piante
 
         static Pianta[] piante = new Pianta[] { null,
                                                 null,
@@ -72,17 +72,12 @@ namespace Plants_Vs_Zombies
                     case 0:
                         Disegna();
                         break;
-                    case 1: //impostazioni
-                        Impostazioni.impostazioni();
-                        Finestra.MouseButtonPressed -= Impostazioni.MouseClick;
-                        Finestra.MouseButtonPressed += MouseClick;
-                        break;
-                    case 2: //shop
+                    case 1: //shop
                         Shop.shop();
                         Finestra.MouseButtonPressed -= Shop.MouseClick;
                         Finestra.MouseButtonPressed += MouseClick;
                         break;
-                    case 3: //piante
+                    case 2: //piante
                         Piante.SelezionaPiante(ref Home.piante);
                         Finestra.MouseButtonPressed -= Piante.MouseClick;
                         Finestra.MouseButtonPressed += MouseClick;
@@ -103,12 +98,10 @@ namespace Plants_Vs_Zombies
 
             if (x >= 912 && x <= 1032 && y >= 525 && y <= 585 && schermata == 0 && Piante.stato) // tasto gioca (HOME)
                 Program.fase = 1;
-            else if (x >= 14 && x <= 86 && y >= 14 && y <= 86 && schermata == 0) // tasto impostazioni (HOME)
-                schermata = 1;
             else if (x >= 14 && x <= 134 && y >= 525 && y <= 585 && schermata == 0) // tasto shop (HOME)
-                schermata = 2;
+                schermata = 1;
             else if (x >= 184 && x <= 858 && y >= 185 && y <= 454 && schermata == 0 && Program.piante_ottenute.Count > 0) // tasto seleziona piante (HOME)
-                schermata = 3;
+                schermata = 2;
         }
 
         static public void Disegna()
@@ -117,18 +110,6 @@ namespace Plants_Vs_Zombies
             {
                 HOME.Scale = new Vector2f((float)1045 / (float)HOME.Texture.Size.X, (float)600 / (float)HOME.Texture.Size.Y);
                 Finestra.Draw(HOME);
-
-                // TASTO IMPOSTAZIONI
-                {
-                    CircleShape circle_imp = new CircleShape(36);
-                    circle_imp.FillColor = new Color(100, 100, 100, 180);
-                    circle_imp.Position = new Vector2f(14, 14);
-                    Finestra.Draw(circle_imp);
-
-                    INGRANAGGIO.Scale = new Vector2f(0.13f, 0.13f);
-                    INGRANAGGIO.Position = new Vector2f(19, 19);
-                    Finestra.Draw(INGRANAGGIO);
-                }
                 // TASTO PLAY
                 {
                     RectangleShape rect_play = new RectangleShape(new Vector2f(120, 60));
