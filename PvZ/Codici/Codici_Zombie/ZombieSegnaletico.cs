@@ -15,6 +15,7 @@ namespace Plants_Vs_Zombies
     {
         Pianta p;
         Timer mangia = new Timer(750);
+        Timer Mov_Zombie = new Timer(100);
 
         static private float prob;
 
@@ -47,7 +48,6 @@ namespace Plants_Vs_Zombies
             sprite.Position = new Vector2f(sprite.Position.X, sprite.Position.Y - 23);
             sprite.Scale = new Vector2f(-0.085f, 0.085f);
             {
-                Timer Mov_Zombie = new Timer(100);
                 Mov_Zombie.Elapsed += Mov_Zombie_Elapsed;
                 Mov_Zombie.Enabled = true;
 
@@ -75,9 +75,13 @@ namespace Plants_Vs_Zombies
                             if (new Random().Next(0, 100) <= (1 / 3))
                             {
                                 Moneta m = new Moneta(sprite.Position, new Random().Next(5, 11));
-                                base.Vita = vita;
                             }
                         }
+                    mangia.Stop();
+                    mangia.Close();
+                    Mov_Zombie.Stop();
+                    Mov_Zombie.Close();
+                    base.Vita = vita;
                 }
             }
         }

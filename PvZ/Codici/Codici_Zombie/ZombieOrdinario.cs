@@ -55,6 +55,7 @@ namespace Plants_Vs_Zombies
                 mangia.Enabled = true;
             } //Timer
         }
+
         public ZombieOrdinario(float prob)
         {
             Probabilita = prob;
@@ -78,9 +79,13 @@ namespace Plants_Vs_Zombies
                                 if (new Random().Next(0, 100) <= (1 / 3))
                                 {
                                     Moneta m = new Moneta(sprite.Position, new Random().Next(1, 6));
-                                    base.Vita = vita;
                                 }
                             }
+                        mangia.Stop();
+                        mangia.Close();
+                        Mov_Zombie.Stop();
+                        Mov_Zombie.Close();
+                        base.Vita = vita;
                     }
                 }
             }

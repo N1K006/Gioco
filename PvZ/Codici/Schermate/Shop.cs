@@ -216,11 +216,13 @@ namespace Plants_Vs_Zombies
                 Home.schermata = 0;
             else if (x >= 32 && x <= 268 && y >= 524 && y <= 578) // Tasto compra
             {
-                if (!Program.piante_ottenute.Contains(p) && Program.monete >= p.costo_monete)
-                {
-                    Program.piante_ottenute.Add(p);
-                    Program.monete -= p.costo_monete;
-                }
+                if (p != null)
+                    if (!Program.piante_ottenute.Contains(p))
+                        if (Program.monete >= p.costo_monete)
+                        {
+                            Program.piante_ottenute.Add(p);
+                            Program.monete -= p.costo_monete;
+                        }
             }
             else if (x >= 325 && x <= 1010) // altre piante
             {

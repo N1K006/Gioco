@@ -204,73 +204,84 @@ namespace Plants_Vs_Zombies
                 Finestra.DispatchEvents();
                 Finestra.Display();
             }
-            Reset();
+            if (ricomincia)
+                Program.fase = 1;
+            else
+                Reset();
+            ricomincia = false;
         }
 
         public void Reset()
         {
-            // RESET
+            SUONO_GIOCO.Stop();
+            Sun_On_Map.Stop();
+            Zombie_On.Stop();
+            Vel_Zombie.Stop();
+            Diff.Stop();
+
+            // Utilità
             {
-                SUONO_GIOCO.Stop();
-                System.Threading.Thread.Sleep(3);
-                // Piante e Zombie
+                // Semi
+                for (int i = 0; i < Seme.semi.Count(); i++)
                 {
-                    for (int y = 0; y < 5; y++)
-                        for (int x = 0; x < 9; x++)
-                            if (Mappa_piante[x, y] != null)
-                            {
-                                Mappa_piante[x, y].attesa.Close();
-                                Mappa_piante[x, y].Vita = -999;
-                            }
-
-                    for (int lis = 0; lis < 5; lis++)
-                        for (int zom = 0; zom < Mappa_zombie[lis].Count; zom++)
-                            if (Mappa_zombie[lis][zom] != null)
-                                Mappa_zombie[lis][zom].Vita = 0;
+                    Seme.semi[i].Stop();
+                    Seme.semi.Clear();
                 }
-                // Utilità
+                // Soli presi e soli non presi
+                for (int i = 0; i < Sole.soli.Count(); i++)
                 {
-                    for (int i = 0; i < Seme.semi.Count(); i++)
-                        Seme.semi[i].Stop();
-
-                    Sun_On_Map.Stop();
-                    for (int i = 0; i < Sole.soli.Count(); i++)
-                        Sole.soli[i].Stop();
-
-                    for (int i = 0; i < Moneta.monete.Count(); i++)
-                        Moneta.monete[i].Stop();
+                    Sole.soli[i].Stop();
+                    Sole.soli.Clear();
                 }
-                System.Threading.Thread.Sleep(3);
-
-                zombie = new Zombie[]{ new ZombieOrdinario(0f),
-                                       new ZombieSegnaletico(0f) };
-
-                Sun_On_Map.Close();
-                Zombie_On.Close();
-                Vel_Zombie.Close();
-                Diff.Close();
-
-                Moneta.monete = new List<Moneta>();
-                Moneta.monetePrese = new List<Moneta>();
-                Sole.soli = new List<Sole>();
-                Sole.soliPresi = new List<Sole>();
-                Seme.semi = new List<Seme>();
-
-                if (!ricomincia)
+                for (int i = 0; i < Sole.soliPresi.Count(); i++)
                 {
-                    Finestra.MouseButtonPressed -= MouseClick;
-                    Finestra.MouseMoved -= MouseMoved;
+                    Sole.soliPresi[i].Stop();
+                    Sole.soliPresi.Clear();
                 }
-
-                instance = null;
-                Pianta.gioco = null;
-                Paletta.gioco = null;
-                Sole.gioco = null;
-                Seme.gioco = null;
-                Zombie.gioco = null;
-                Moneta.gioco = null;
-                ricomincia = false;
+                // Monete
+                for (int i = 0; i < Moneta.monete.Count(); i++)
+                {
+                    Moneta.monete[i].Stop();
+                    Moneta.monete.Clear();
+                }
             }
+
+            // Zombie e Piante
+            {
+                for (int y = 0; y < 5; y++)
+                {
+                    for (int x = 0; x < 9; x++)
+                    {
+                        if (Mappa_piante[x, y] != null)
+                        {
+                            Mappa_piante[x, y].attesa.Stop();
+                            Mappa_piante[x, y].attesa.Close();
+                            Mappa_piante[x, y].Vita = -999;
+                            Mappa_piante[x, y] = null;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < Mappa_zombie[i].Count; j++)
+                    {
+                        Mappa_zombie[i][j].Vita = 0;
+                        Mappa_zombie[i].Clear();
+                    }
+            }
+
+            System.Threading.Thread.Sleep(5);
+
+            zombie = new Zombie[]{ new ZombieOrdinario(0f),
+                                   new ZombieSegnaletico(0f) };
+            Difficolta = 0;
+            difficolta = 0;
+            contatore = 5;
+            n_soli = 5000;
+            home = false;
+            muto = false;
+            instance = null;
+            Program.fase = 0;
         }
 
         public void MouseClick(object sender, MouseButtonEventArgs e)
@@ -283,7 +294,7 @@ namespace Plants_Vs_Zombies
             bool s = false;
             bool m = false;
 
-            if (home == false)
+            if (!home)
             {
                 lock (LockSoli)
                 {
@@ -295,22 +306,23 @@ namespace Plants_Vs_Zombies
                 }
             }
 
-            if (x > 24 && x < 140 && home == false && !(s || m)) //lista selezionata
+            if (x > 24 && x < 140 && !home && !(s || m)) //lista selezionata
             {
                 int Y = y - 10;
                 int aux = Y % 65;
                 Y /= 65;
-                if (Lista_piante[Y] == null)
-                    Y = 8;
-                else if (Y < 8)
-                    if (aux > 57 || y - 10 < 0 || !Lista_piante[Y].GetInstace().Disponibile())
+                if (Y < 8)
+                {
+                    if (Lista_piante[Y] == null)
                         Y = 8;
-
+                    else if (aux > 57 || y - 10 < 0 || !Lista_piante[Y].GetInstace().Disponibile())
+                        Y = 8;
+                }
                 yLista = Y;
                 Paletta.presa = false;
                 Paletta.pos();
             }
-            else if (x > 253 && y > 71 && home == false && !(s || m)) //casella selezionata
+            else if (x > 253 && y > 71 && !home && !(s || m)) //casella selezionata
             {
                 int X, Y;
                 X = (x - 254) / 81;
@@ -326,35 +338,24 @@ namespace Plants_Vs_Zombies
                         PosizionaPianta(X, Y);
                 }
             }
-            else if (x >= 327 && x <= 375 && y >= 13 && y <= 60 && home == false && !(s || m)) // paletta
+            else if (x >= 327 && x <= 375 && y >= 13 && y <= 60 && !home && !(s || m)) // paletta
             {
                 Paletta.presa = true;
                 yLista = 8;
             }
             else if (x >= 976 && x <= 1030 && y >= 16 && y <= 70) // Tasto Pausa
             {
-
-                for (int i = 0; i < Seme.semi.Count(); i++)
-                    Seme.semi[i].Stop();
-
-                Sun_On_Map.Stop();
-                for (int i = 0; i < Sole.soli.Count(); i++)
-                    Sole.soli[i].Stop();
-
-                for (int i = 0; i < Moneta.monete.Count(); i++)
-                    Moneta.monete[i].Stop();
-
                 Paletta.presa = false;
                 home = true;
                 yLista = 8;
             }
-            else if (x >= 437 && x <= 605 && y >= 175 && y <= 223 && home == true) // Tasto riprendi
+            else if (x >= 437 && x <= 605 && y >= 175 && y <= 223 && home) // Tasto riprendi
             {
                 home = false;
                 Paletta.presa = false;
                 yLista = 8;
             }
-            else if (x >= 437 && x <= 605 && y >= 385 && y <= 435 && home == true && !(s || m)) // Tasto Home
+            else if (x >= 437 && x <= 605 && y >= 385 && y <= 435 && home && !(s || m)) // Tasto Home
             {
                 Home.schermata = 0;
                 Program.fase = 0;
@@ -362,7 +363,7 @@ namespace Plants_Vs_Zombies
                 Paletta.presa = false;
                 yLista = 8;
             }
-            else if (x >= 437 && x <= 606 && y >= 315 && y <= 363 && home == true) // Tasto Muta
+            else if (x >= 437 && x <= 606 && y >= 315 && y <= 363 && home) // Tasto Muta
             {
                 Paletta.presa = false;
                 home = true;
@@ -374,7 +375,7 @@ namespace Plants_Vs_Zombies
                 else
                     SUONO_GIOCO.Volume = 100;
             }
-            else if (x >= 437 && x <= 606 && y >= 245 && y <= 295 && home == true) // Tasto Ricomincia
+            else if (x >= 437 && x <= 606 && y >= 245 && y <= 295 && home) // Tasto Ricomincia
             {
                 Paletta.presa = false;
                 home = false;
@@ -463,18 +464,6 @@ namespace Plants_Vs_Zombies
                 n_sole.Position = new Vector2f(235, 26);
                 Finestra.Draw(n_sole); //Numero soli
             }
-            // Immagine conta monete
-            {
-                C_M.Origin = new Vector2f(75, 75);
-                C_M.Scale = new Vector2f(0.35f, 0.35f);
-                C_M.Position = new Vector2f(10 + C_M.Origin.X * C_M.Scale.X, 535 + C_M.Origin.X * C_M.Scale.X);
-                Finestra.Draw(C_M);  // Contatore soli
-
-                Text num_monete = new Text(Convert.ToString(Program.monete), numeri, 13);
-                num_monete.FillColor = Color.White;
-                num_monete.Position = new Vector2f(80, 554.5f);
-                Finestra.Draw(num_monete); // Numero monete
-            }
             // Piante nella mappa
             {
                 for (int y = 0; y < 5; y++)
@@ -509,6 +498,18 @@ namespace Plants_Vs_Zombies
                             Finestra.Draw(rect);
                         }
                 }
+            }
+            // Immagine conta monete
+            {
+                C_M.Origin = new Vector2f(75, 75);
+                C_M.Scale = new Vector2f(0.35f, 0.35f);
+                C_M.Position = new Vector2f(10 + C_M.Origin.X * C_M.Scale.X, 535 + C_M.Origin.X * C_M.Scale.X);
+                Finestra.Draw(C_M);  // Contatore soli
+
+                Text num_monete = new Text(Convert.ToString(Program.monete), numeri, 13);
+                num_monete.FillColor = Color.White;
+                num_monete.Position = new Vector2f(80, 554.5f);
+                Finestra.Draw(num_monete); // Numero monete
             }
             // Soli, monete e semi
             {
