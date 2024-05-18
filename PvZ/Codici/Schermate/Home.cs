@@ -42,7 +42,7 @@ namespace Plants_Vs_Zombies
 
         static public int schermata = 0; //0 = principale, 1 = shop, 2 = piante
 
-        static Pianta[] piante = new Pianta[] { null,
+        public static Pianta[] piante = new Pianta[] { null,
                                                 null,
                                                 null,
                                                 null,
@@ -51,8 +51,9 @@ namespace Plants_Vs_Zombies
                                                 null,
                                                 null};
 
-        public static void home(out Pianta[] piante)
+        public static void home(ref Pianta[] piante)
         {
+            Home.piante = piante;
             SUONO_HOME.Volume = 100;
             
             Finestra.SetVerticalSyncEnabled(true);

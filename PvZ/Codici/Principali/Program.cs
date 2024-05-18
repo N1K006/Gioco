@@ -29,7 +29,9 @@ namespace Plants_Vs_Zombies
                                           new Peperoncino()
                                           /*new KiwiBestiale()*/ };
 
-        public static List<Pianta> piante_ottenute = new(){};
+        public static List<Pianta> piante_ottenute = new(){ new Sparasemi(), new Girasole()};
+
+        public static Pianta[] piante = new Pianta[8];
 
         public static int monete = 10000;
 
@@ -47,7 +49,7 @@ namespace Plants_Vs_Zombies
             Finestra.SetVerticalSyncEnabled(true);
             Finestra.Closed += (sender, args) => Finestra.Close();
 
-            Pianta[] piante = new Pianta[8];
+            Salvataggio.Carica();
 
             while (Finestra.IsOpen)
             {
@@ -55,7 +57,7 @@ namespace Plants_Vs_Zombies
                 switch (fase)
                 {
                     case 0:
-                        Home.home(out piante);
+                        Home.home(ref piante);
                         Finestra.MouseButtonPressed -= Home.MouseClick;
                         break;
                     case 1:
@@ -65,6 +67,7 @@ namespace Plants_Vs_Zombies
                 Finestra.DispatchEvents();
                 Finestra.Display();
             }
+            Salvataggio.Salva();
         }
     }
 }
