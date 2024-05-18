@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
 using System.Timers;
-using System.Reflection.Emit;
 
 namespace Plants_Vs_Zombies
 {
@@ -75,12 +69,10 @@ namespace Plants_Vs_Zombies
                     {
                         if (Program.fase != 0)
                             lock (gioco.LockZombie)
-                            {
                                 if (new Random().Next(0, 100) <= (1 / 3))
                                 {
                                     Moneta m = new Moneta(sprite.Position, new Random().Next(1, 6));
                                 }
-                            }
                         mangia.Stop();
                         mangia.Close();
                         Mov_Zombie.Stop();
