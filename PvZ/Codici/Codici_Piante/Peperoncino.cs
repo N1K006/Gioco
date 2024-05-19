@@ -88,9 +88,10 @@ namespace Plants_Vs_Zombies
             return new Peperoncino();
         }
 
-        public override bool Disponibile()
+        public override bool Disponibile
         {
-            return disponibile;
+            get => disponibile;
+            set => disponibile = value;
         }
         public override void Stop()
         {

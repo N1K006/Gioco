@@ -92,9 +92,10 @@ namespace Plants_Vs_Zombies
             return new MuroNoce();
         }
 
-        public override bool Disponibile() 
-        { 
-            return disponibile;
+        public override bool Disponibile
+        {
+            get => disponibile;
+            set => disponibile = value;
         }
         public override void Stop() { }
     }

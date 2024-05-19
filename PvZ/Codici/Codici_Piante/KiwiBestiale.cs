@@ -78,9 +78,10 @@ namespace Plants_Vs_Zombies
                 Gioco.Finestra.Draw(L_KB);
         }
 
-        public override bool Disponibile()
+        public override bool Disponibile
         {
-            return disponibile;
+            get => disponibile;
+            set => disponibile = value;
         }
 
         public override void GetInstace(int x, int y)

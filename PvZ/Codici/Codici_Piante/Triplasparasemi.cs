@@ -151,9 +151,10 @@ namespace Plants_Vs_Zombies
             return new Triplasparasemi();
         }
 
-        public override bool Disponibile()
+        public override bool Disponibile
         {
-            return disponibile;
+            get => disponibile;
+            set => disponibile = value;
         }
 
         public void Dispose()

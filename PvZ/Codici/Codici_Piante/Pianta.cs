@@ -51,7 +51,7 @@ namespace Plants_Vs_Zombies
 
 		abstract public void GetInstace(int x, int y);
 		abstract public Pianta GetInstace();
-		abstract public bool Disponibile();
+		abstract public bool Disponibile { get; set; }
 		abstract public void DisegnaLista(Vector2f posizione, Vector2f scala);
         abstract public void Stop();
         //abstract public void Riprendi();
