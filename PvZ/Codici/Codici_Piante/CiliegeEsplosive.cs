@@ -79,26 +79,22 @@ namespace Plants_Vs_Zombies
                 lock (gioco.LockZombie)
                 {
                     for (int i = 0; i < gioco.Mappa_zombie[Y - 1].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y - 1][i].sprite.Position.X - pianta.Position.X) < 81)
-                            gioco.Mappa_zombie[Y - 1][i].Vita = 0;
+                        if (Math.Abs(gioco.Mappa_zombie[Y - 1][i].sprite.Position.X - pianta.Position.X) < 200)
+                        {
+                            gioco.Mappa_zombie[Y - 1][i].Vita = -999;
+                            i--;
+                        }
                 }
             }
-            //if (Y > 0) // fila sopra
-            //{
-            //    lock (gioco.LockZombie)
-            //    {
-            //        for (int i = 0; i < gioco.Mappa_zombie[Y - 1].Count; i++)
-            //        {
-            //            if (Math.Abs(gioco.Mappa_zombie[Y - 1][i].sprite.Position.X - pianta.Position.X) < )
-            //    }
-            //    }
-            //}
 
             lock (gioco.LockZombie)
             {
                 for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
-                    if (Math.Abs(gioco.Mappa_zombie[Y][i].sprite.Position.X - pianta.Position.X) < 81)
-                        gioco.Mappa_zombie[Y][i].Vita = 0;
+                    if (Math.Abs(gioco.Mappa_zombie[Y][i].sprite.Position.X - pianta.Position.X) < 200)
+                    {
+                        gioco.Mappa_zombie[Y][i].Vita = -999;
+                        i--;
+                    }
             }
 
             if (Y < 4) // fila sotto
@@ -106,11 +102,16 @@ namespace Plants_Vs_Zombies
                 lock (gioco.LockZombie)
                 {
                     for (int i = 0; i < gioco.Mappa_zombie[Y + 1].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y + 1][i].sprite.Position.X - pianta.Position.X) < 81)
-                            gioco.Mappa_zombie[Y + 1][i].Vita = 0;
+                        if (Math.Abs(gioco.Mappa_zombie[Y + 1][i].sprite.Position.X - pianta.Position.X) < 200)
+                        {
+                            gioco.Mappa_zombie[Y + 1][i].Vita = -999;
+                            i--;
+                        }
                 }
             }
 
+            esplodi.Stop();
+            esplodi.Close();
             base.Vita = 0;
         }
 

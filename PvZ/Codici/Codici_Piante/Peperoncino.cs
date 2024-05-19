@@ -75,11 +75,11 @@ namespace Plants_Vs_Zombies
         void brucia_Elapsed(object sender, ElapsedEventArgs e)
         {
             lock (gioco.LockZombie)
-            {
-                for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
-                    gioco.Mappa_zombie[Y][i].Vita = 0;
-            }
+                while (gioco.Mappa_zombie[Y].Count > 0)
+                    gioco.Mappa_zombie[Y][0].Vita = -999;
 
+            brucia.Stop();
+            brucia.Close();
             base.Vita = 0;
         }
 

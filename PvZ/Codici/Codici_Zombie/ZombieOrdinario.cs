@@ -69,10 +69,13 @@ namespace Plants_Vs_Zombies
                     {
                         if (Program.fase != 0)
                             lock (gioco.LockZombie)
-                                if (new Random().Next(0, 100) <= (1 / 3))
+                            {
+                                int val = new Random().Next(0, 6);
+                                if (val > 0)
                                 {
-                                    Moneta m = new Moneta(sprite.Position, new Random().Next(1, 6));
+                                    Moneta moneta = new Moneta(sprite.Position, val);
                                 }
+                            }
                         mangia.Stop();
                         mangia.Close();
                         Mov_Zombie.Stop();

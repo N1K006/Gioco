@@ -42,14 +42,7 @@ namespace Plants_Vs_Zombies
 
         static public int schermata = 0; //0 = principale, 1 = shop, 2 = piante
 
-        public static Pianta[] piante = new Pianta[] { null,
-                                                null,
-                                                null,
-                                                null,
-                                                null,
-                                                null,
-                                                null,
-                                                null};
+        public static Pianta[] piante;
 
         public static void home(ref Pianta[] piante)
         {
@@ -77,15 +70,18 @@ namespace Plants_Vs_Zombies
                         Shop.shop();
                         Finestra.MouseButtonPressed -= Shop.MouseClick;
                         Finestra.MouseButtonPressed += MouseClick;
+                        Salvataggio.Salva();
                         break;
                     case 2: //piante
                         Piante.SelezionaPiante(ref Home.piante);
                         Finestra.MouseButtonPressed -= Piante.MouseClick;
                         Finestra.MouseButtonPressed += MouseClick;
+                        Salvataggio.Salva();
                         break;
                 }
                 Finestra.Display();
             }
+            Salvataggio.Salva();
             SUONO_HOME.Stop();
             piante = Home.piante;
         }
@@ -97,11 +93,11 @@ namespace Plants_Vs_Zombies
 
             Logger.WriteLine("X: " + x.ToString() + " " + "Y: " + y, 6);
 
-            if (x >= 912 && x <= 1032 && y >= 525 && y <= 585 && schermata == 0 && Piante.stato) // tasto gioca (HOME)
+            if (x >= 912 && x <= 1032 && y >= 525 && y <= 585 && schermata == 0) // tasto gioca (HOME)
                 Program.fase = 1;
             else if (x >= 14 && x <= 134 && y >= 525 && y <= 585 && schermata == 0) // tasto shop (HOME)
                 schermata = 1;
-            else if (x >= 184 && x <= 858 && y >= 185 && y <= 454 && schermata == 0 && Program.piante_ottenute.Count > 0) // tasto seleziona piante (HOME)
+            else if (x >= 184 && x <= 858 && y >= 185 && y <= 454 && schermata == 0) // tasto seleziona piante (HOME)
                 schermata = 2;
         }
 

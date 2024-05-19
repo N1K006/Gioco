@@ -7,6 +7,7 @@ using System.Text;
 using SFML.Window;
 using SFML.Audio;
 using System.Timers;
+using System.IO;
 
 namespace Plants_Vs_Zombies
 {
@@ -99,7 +100,7 @@ namespace Plants_Vs_Zombies
 
         public List<Zombie>[] Mappa_zombie = new List<Zombie>[5];
 
-        Timer Zombie_On = new Timer(5000); // velocita di spawn
+        Timer Zombie_On = new Timer(100); // velocita di spawn
         Timer Vel_Zombie = new Timer(5000); // tempo per aumentare la velocita di spawn
 
         Timer Diff = new Timer(1000); // tempo per cambiare gli zombie che spawnano
@@ -204,6 +205,7 @@ namespace Plants_Vs_Zombies
                 Finestra.DispatchEvents();
                 Finestra.Display();
             }
+
             if (ricomincia)
                 Program.fase = 1;
             else
@@ -303,6 +305,9 @@ namespace Plants_Vs_Zombies
                 lock (LockMonete)
                 {
                     m = ClickMoneta();
+                    if (m)
+                        using (BinaryWriter wa = new BinaryWriter(File.Open(@"..\..\..\Salvataggio\Altro.txt", FileMode.Create), Encoding.UTF8, false))
+                            wa.Write((Int32)Program.monete);
                 }
             }
 
@@ -413,28 +418,32 @@ namespace Plants_Vs_Zombies
 
         bool ClickSole()
         {
+            bool presa = false;
             lock (LockSoli)
                 for (int i = 0; i < Sole.soli.Count; i++)
                     if (Sole.soli[i] != null)
                         if (x >= Sole.soli[i].pos.X - 32 && x <= Sole.soli[i].pos.X + 32 && y >= Sole.soli[i].pos.Y - 32 && y <= Sole.soli[i].pos.Y + 32)
                         {
                             Sole.soli[i].Preso();
-                            return true;
+                            i--;
+                            presa = true;
                         }
-            return false;
+            return presa;
         }
 
         bool ClickMoneta()
         {
+            bool presa = false;
             lock (LockMonete)
                 for (int i = 0; i < Moneta.monete.Count; i++)
                     if (Moneta.monete[i] != null)
                         if (x >= Moneta.monete[i].moneta.Position.X - 32 && x <= Moneta.monete[i].moneta.Position.X + 32 && y >= Moneta.monete[i].moneta.Position.Y - 32 && y <= Moneta.monete[i].moneta.Position.Y + 32)
                         {
                             Moneta.monete[i].Preso();
-                            return true;
+                            i--;
+                            presa = true;
                         }
-            return false;
+            return presa;
         }
 
         void PosizionaPianta(int x, int y)

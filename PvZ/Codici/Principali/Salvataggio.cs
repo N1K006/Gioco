@@ -1,88 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Plants_Vs_Zombies
 {
     class Salvataggio
     {
+        public static object Lock = new object();
         public static void Salva()
         {
-            FileStream PianteOttenute = File.Open(@"..\..\..\Salvataggio\PianteOttenute.txt", FileMode.Create);
-            FileStream PianteUsate = File.Open(@"..\..\..\Salvataggio\PianteUsate.txt", FileMode.Create);
-            FileStream Altro = File.Open(@"..\..\..\Salvataggio\Altro.txt", FileMode.Create);
+            lock (Lock)
+            {
+                string pianteOttenutePath = @"..\..\..\Salvataggio\PianteOttenute.txt";
+                string pianteUsatePath = @"..\..\..\Salvataggio\PianteUsate.txt";
+                string altroPath = @"..\..\..\Salvataggio\Altro.txt";
 
-            BinaryWriter wo = new BinaryWriter(PianteOttenute, Encoding.UTF8, false);
+                using (FileStream PianteOttenute = File.Open(pianteOttenutePath, FileMode.Create))
+                using (BinaryWriter wo = new BinaryWriter(PianteOttenute, Encoding.UTF8, false))
+                {
+                    foreach (Pianta p in Program.all)
+                        wo.Write(Program.piante_ottenute.Contains(p));
+                }
 
-            foreach (Pianta p in Program.all)
-                wo.Write(Program.piante_ottenute.Contains(p));
+                using (FileStream PianteUsate = File.Open(pianteUsatePath, FileMode.Create))
+                using (BinaryWriter wu = new BinaryWriter(PianteUsate, Encoding.UTF8, false))
+                {
+                    foreach (Pianta p in Program.piante)
+                        if (p != null)
+                        {
+                            wu.Write((Int16)Array.IndexOf(Program.all, p));
+                            Logger.WriteLine(Array.IndexOf(Program.all, p).ToString(), 5);
+                        }
+                        else
+                            wu.Write((Int16)(-1));
+                }
 
-            wo.Close();
-            PianteOttenute.Close();
-
-
-            BinaryWriter wu = new BinaryWriter(PianteUsate, Encoding.UTF8, false);
-
-            foreach (Pianta p in Home.piante)
-                if(p != null)
-                    wu.Write((Int16)Array.IndexOf(Program.all, p));
-                else
-                    wu.Write((Int16)(-1));
-
-
-            BinaryWriter wa = new BinaryWriter(Altro, Encoding.UTF8, false);
-
-            wa.Write((Int32)Program.monete);
-
-            wa.Close();
-            Altro.Close();
+                using (FileStream Altro = File.Open(altroPath, FileMode.Create))
+                using (BinaryWriter wa = new BinaryWriter(Altro, Encoding.UTF8, false))
+                {
+                    wa.Write((Int32)Program.monete);
+                }
+            }
         }
+
         public static void Carica()
         {
-            FileStream PianteOttenute = File.Open(@"..\..\..\Salvataggio\PianteOttenute.txt", FileMode.Open, FileAccess.Read);
-            FileStream PianteUsate = File.Open(@"..\..\..\Salvataggio\PianteUsate.txt", FileMode.Open, FileAccess.Read);
-            FileStream Altro = File.Open(@"..\..\..\Salvataggio\Altro.txt", FileMode.Open, FileAccess.Read);
-
-            if (File.Exists(@"..\..\..\Salvataggio\PianteOttenute.txt"))
+            lock (Lock)
             {
-                BinaryReader ro = new BinaryReader(PianteOttenute, Encoding.UTF8, false);
+                string pianteOttenutePath = @"..\..\..\Salvataggio\PianteOttenute.txt";
+                string pianteUsatePath = @"..\..\..\Salvataggio\PianteUsate.txt";
+                string altroPath = @"..\..\..\Salvataggio\Altro.txt";
 
-                foreach (Pianta p in Program.all)
-                    if (PianteOttenute.Position < PianteOttenute.Length)
-                        if (ro.ReadBoolean())
-                            Program.piante_ottenute.Add(p);
-                ro.Close();
-                PianteOttenute.Close();
-            }
-
-            if (File.Exists(@"..\..\..\Salvataggio\PianteUsate.txt"))
-            {
-                BinaryReader ru = new BinaryReader(PianteUsate, Encoding.UTF8, false);
-
-                for (int i = 0; i < 8; i++)
+                if (File.Exists(pianteOttenutePath))
                 {
-                    if (PianteUsate.Position < PianteUsate.Length)
+                    using (FileStream PianteOttenute = File.Open(pianteOttenutePath, FileMode.Open, FileAccess.Read))
+                    using (BinaryReader ro = new BinaryReader(PianteOttenute, Encoding.UTF8, false))
                     {
-                        int j = ru.ReadInt16();
-                        if (j == -1)
-                            Home.piante[j] = null;
-                        else
-                            Program.piante[j] = Program.all[j];
+                        Program.piante_ottenute.Clear();
+                        foreach (Pianta p in Program.all)
+                            if (PianteOttenute.Position < PianteOttenute.Length)
+                                if (ro.ReadBoolean())
+                                {
+                                    Program.piante_ottenute.Add(p);
+                                }
+                    }
+                }
+
+                if (File.Exists(pianteUsatePath))
+                {
+                    using (FileStream PianteUsate = File.Open(pianteUsatePath, FileMode.Open, FileAccess.Read))
+                    using (BinaryReader ru = new BinaryReader(PianteUsate, Encoding.UTF8, false))
+                    {
+                        for (int i = 0; i < 8; i++)
+                            if (PianteUsate.Position < PianteUsate.Length)
+                            {
+                                int j = ru.ReadInt16();
+                                if (j == -1)
+                                    Program.piante[i] = null;
+                                else if (j >= 0 && j < Program.all.Length)
+                                    Program.piante[i] = Program.all[j];
+                            }
+                    }
+                }
+
+                if (File.Exists(altroPath))
+                {
+                    using (FileStream Altro = File.Open(altroPath, FileMode.Open, FileAccess.Read))
+                    using (BinaryReader ra = new BinaryReader(Altro, Encoding.UTF8, false))
+                    {
+                        if (Altro.Position < Altro.Length)
+                        {
+                            Program.monete = ra.ReadInt32();
+                        }
                     }
                 }
             }
-
-            if (File.Exists(@"..\..\..\Salvataggio\Altro.txt"))
-            {
-                BinaryReader ra = new BinaryReader(Altro, Encoding.UTF8, false);
-                if (PianteUsate.Position < PianteUsate.Length)
-                    Program.monete = ra.ReadInt32();
-
-                ra.Close();
-                Altro.Close();
-            }
         }
-
     }
 }

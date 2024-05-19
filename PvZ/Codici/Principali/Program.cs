@@ -5,6 +5,7 @@ using SFML.Window;
 using SFML.Audio;
 using System.Timers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Plants_Vs_Zombies
 {
@@ -29,7 +30,7 @@ namespace Plants_Vs_Zombies
                                           new Peperoncino()
                                           /*new KiwiBestiale()*/ };
 
-        public static List<Pianta> piante_ottenute = new(){ new Sparasemi(), new Girasole()};
+        public static List<Pianta> piante_ottenute = new();
 
         public static Pianta[] piante = new Pianta[8];
 
@@ -51,6 +52,12 @@ namespace Plants_Vs_Zombies
 
             Salvataggio.Carica();
 
+            if (!piante_ottenute.Contains(all[0])) // aggiunge la sparasemi se nen ce l'ha
+                piante_ottenute.Add(all[0]);
+            if (!piante_ottenute.Contains(all[4])) // aggiunge il girasole se nen ce l'ha
+                piante_ottenute.Add(all[4]);
+
+
             while (Finestra.IsOpen)
             {
                 Finestra.Clear();
@@ -59,15 +66,16 @@ namespace Plants_Vs_Zombies
                     case 0:
                         Home.home(ref piante);
                         Finestra.MouseButtonPressed -= Home.MouseClick;
+                        Salvataggio.Salva();
                         break;
                     case 1:
                         Gioco.Start(piante);
+                        Salvataggio.Salva();
                         break;
                 }
                 Finestra.DispatchEvents();
                 Finestra.Display();
             }
-            Salvataggio.Salva();
         }
     }
 }

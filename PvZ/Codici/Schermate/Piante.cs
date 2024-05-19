@@ -16,7 +16,6 @@ namespace Plants_Vs_Zombies
 		static public List<Pianta> PianteDisponibili = new();
 
 		static Pianta piantaSelezionata = null; // pianta selezionata
-		static public bool stato = false;
 
 		public static void Disegna()
 		{
@@ -84,7 +83,6 @@ namespace Plants_Vs_Zombies
 
 		public static void SelezionaPiante(ref Pianta[] piante)
 		{
-			stato = true;
 			PianteDisponibili.Clear();
 			Piante.PianteSelezionate = piante;
 
