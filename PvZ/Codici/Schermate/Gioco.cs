@@ -574,20 +574,20 @@ namespace Plants_Vs_Zombies
                     {
                         RectangleShape rect = new RectangleShape(new Vector2f(220, 300))
                         {
-                            FillColor = new Color(100, 100, 100, 220)
+                            FillColor = new Color(100, 100, 100, 220),
+                            Position = new Vector2f(Finestra.Size.X / 2, Finestra.Size.Y / 2)
                         };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        rect.Position = new Vector2f(Finestra.Size.X / 2, Finestra.Size.Y / 2);
                         Finestra.Draw(rect);
                     }
                     // Tasto Riprendi
                     {
                         RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
                         {
-                            FillColor = new Color(30, 30, 30, 220)
+                            FillColor = new Color(30, 30, 30, 220),
+                            Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) - 100)
                         };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) - 100);
                         Finestra.Draw(rect);
 
                         Text home = new Text("RIPRENDI", Home.font, 15)
@@ -602,10 +602,10 @@ namespace Plants_Vs_Zombies
                     {
                         RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
                         {
-                            FillColor = new Color(30, 30, 30, 220)
+                            FillColor = new Color(30, 30, 30, 220),
+                            Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) - 30)
                         };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) - 30);
                         Finestra.Draw(rect);
 
                         Text home = new Text("RICOMINCIA", Home.font, 15)
@@ -621,17 +621,19 @@ namespace Plants_Vs_Zombies
                         {
                             RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
                             {
-                                FillColor = new Color(30, 30, 30, 220)
+                                FillColor = new Color(30, 30, 30, 220),
+                                Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 40)
                             };
                             rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                            rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 40);
                             Finestra.Draw(rect);
                         }
                         // Quadratino per muto
                         {
-                            RectangleShape rect = new RectangleShape(new Vector2f(20, 20));
+                            RectangleShape rect = new RectangleShape(new Vector2f(20, 20))
+                            {
+                                Position = new Vector2f((Finestra.Size.X / 2) + 62, (Finestra.Size.Y / 2) + 40)
+                            };
                             rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                            rect.Position = new Vector2f((Finestra.Size.X / 2) + 62, (Finestra.Size.Y / 2) + 40);
 
                             if (muto)
                                 rect.FillColor = Color.Red;
@@ -652,10 +654,10 @@ namespace Plants_Vs_Zombies
                     {
                         RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
                         {
-                            FillColor = new Color(30, 30, 30, 220)
+                            FillColor = new Color(30, 30, 30, 220),
+                            Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 110)
                         };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 110);
                         Finestra.Draw(rect);
 
                         Text home = new Text("HOME", Home.font, 15)
