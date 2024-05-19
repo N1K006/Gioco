@@ -23,7 +23,7 @@ namespace Plants_Vs_Zombies
         void t_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (z != null)
-                z.rallentamenti.RemoveAll(x => x == this);
+                z.rallentamenti.Remove(this);
         }
 
         public static implicit operator int(Rallentamento r)

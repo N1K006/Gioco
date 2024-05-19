@@ -18,9 +18,9 @@ namespace Plants_Vs_Zombies
         public static readonly Sprite L_RO = new Sprite(L_ro);
 
         public static bool disponibile = true;
-        public int danno = 3;
+        public int danno = 4;
         private readonly int X, Y;
-        private Timer Attack_On = new Timer(1000);
+        private Timer Attack_On = new Timer(900);
 
         public override int Vita 
         { 
@@ -74,7 +74,10 @@ namespace Plants_Vs_Zombies
                 for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
                     if (gioco.Mappa_zombie[Y][i].sprite.Position.X <= pianta.Position.X + 308 * pianta.Scale.X && gioco.Mappa_zombie[Y][i].sprite.Position.X + 422 * gioco.Mappa_zombie[Y][i].sprite.Scale.X >= pianta.Position.X)
                         lock (gioco.Mappa_zombie[Y][i].LockVita)
+                        {
                             gioco.Mappa_zombie[Y][i].Vita -= danno;
+                            gioco.Mappa_zombie[Y][i].rallentamenti.Add(new Rallentamento(25, 1000, gioco.Mappa_zombie[Y][i]));
+                        }
         }
 
         public override void GetInstace(int x, int y)

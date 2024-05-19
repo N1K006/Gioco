@@ -29,7 +29,7 @@ namespace Plants_Vs_Zombies
 
         public static Pianta[] piante = new Pianta[8];
 
-        public static int monete = 10000;
+        public static int monete = 0;
 
         public static int fase = 0;
 

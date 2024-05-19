@@ -33,7 +33,7 @@ namespace Plants_Vs_Zombies
                 }
 
                 fila = y;
-                vita = 60;
+                vita = 100;
             }
             danno = 20;
 
@@ -137,9 +137,8 @@ namespace Plants_Vs_Zombies
                 Pianta p = gioco.Mappa_piante[i, fila];
                 if (p == null)
                     continue;
-
-                Logger.WriteLine((sprite.Position.X).ToString(), 6);
-                Logger.WriteLine((sprite.Position.X < p.pianta.Position.X + p.pianta.Texture.Size.X * Math.Abs(p.pianta.Scale.X)).ToString(), 6);
+                else if (p is Rovo)
+                    continue;
 
                 if (sprite.Position.X > p.pianta.Position.X && sprite.Position.X < p.pianta.Position.X + 90)
                 {

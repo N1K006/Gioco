@@ -91,19 +91,20 @@ namespace Plants_Vs_Zombies
 
         public int yLista = 8;
         public int x, y;
-        public int contatore = 5, n_soli = 5000;
+        public int contatore = 5, n_soli = 50;
         public bool home = false, muto = false;
 
         #region Zombie
-        public static Zombie[] zombie = { new ZombieOrdinario(0f),
-                                          new ZombieSegnaletico(0f) };
+        public static Zombie[] zombie = { new ZombieOrdinario(1f),
+                                          new ZombieSegnaletico(1f),
+                                          new ZombieSecchione(0f) };
 
         public List<Zombie>[] Mappa_zombie = new List<Zombie>[5];
 
-        Timer Zombie_On = new Timer(100); // velocita di spawn
+        Timer Zombie_On = new Timer(5000); // velocita di spawn
         Timer Vel_Zombie = new Timer(5000); // tempo per aumentare la velocita di spawn
 
-        Timer Diff = new Timer(1000); // tempo per cambiare gli zombie che spawnano
+        Timer Diff = new Timer(30000); // tempo per cambiare gli zombie che spawnano
         int cDiff = 1;
         public int difficolta = 0; // zombie che spawnano
 
@@ -137,7 +138,7 @@ namespace Plants_Vs_Zombies
         void Vel_Zombie_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (Zombie_On.Interval > 1000)
-                Zombie_On.Interval -= 10;
+                Zombie_On.Interval -= 27.77;
         }
 
         void Diff_Elapsed(object sender, ElapsedEventArgs e)
@@ -252,11 +253,12 @@ namespace Plants_Vs_Zombies
             // Zombi e Piante
             {
                 // Porta disponibile la lista di piante
-                for (int i = 0; i < Lista_piante.Length; i++)
+                foreach (Pianta p in Lista_piante)
                 {
-                    Lista_piante[i].GetInstace().attesa.Stop();
-                    Lista_piante[i].GetInstace().attesa.Close();
-                    Lista_piante[i].GetInstace().Disponibile = true;
+                    if (p != null)
+                        if (!p.GetInstace().Disponibile)
+                            p.GetInstace().Disponibile = true;
+                        
                 }
 
                 // Piante
