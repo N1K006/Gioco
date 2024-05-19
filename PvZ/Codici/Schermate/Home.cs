@@ -1,17 +1,13 @@
-﻿using System;
+﻿using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
-using SFML.Audio;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SFML.Window;
 
 namespace Plants_Vs_Zombies
 {
     static class Home
     {
-        static public RenderWindow Finestra = null;
+        public static RenderWindow Finestra = null;
 
         #region SFML
         // Immagine HOME
@@ -40,7 +36,7 @@ namespace Plants_Vs_Zombies
         static Text seleziona_piante;
         public static Font font = new Font(@"..\..\..\Font\ComixLoud.ttf");
 
-        static public int schermata = 0; //0 = principale, 1 = shop, 2 = piante
+        public static int schermata = 0; //0 = principale, 1 = shop, 2 = piante
 
         public static Pianta[] piante;
 
@@ -48,7 +44,7 @@ namespace Plants_Vs_Zombies
         {
             Home.piante = piante;
             SUONO_HOME.Volume = 100;
-            
+
             Finestra.SetVerticalSyncEnabled(true);
             Finestra.Closed += (sender, args) => Finestra.Close();
             Finestra.MouseButtonPressed -= MouseClick;
@@ -101,7 +97,7 @@ namespace Plants_Vs_Zombies
                 schermata = 2;
         }
 
-        static public void Disegna()
+        public static void Disegna()
         {
             if (schermata == 0)
             {
@@ -109,25 +105,33 @@ namespace Plants_Vs_Zombies
                 Finestra.Draw(HOME);
                 // TASTO PLAY
                 {
-                    RectangleShape rect_play = new RectangleShape(new Vector2f(120, 60));
-                    rect_play.FillColor = new Color(100, 100, 100, 220);
-                    rect_play.Position = new Vector2f(912, 525);
+                    RectangleShape rect_play = new RectangleShape(new Vector2f(120, 60))
+                    {
+                        FillColor = new Color(100, 100, 100, 220),
+                        Position = new Vector2f(912, 525)
+                    };
                     Finestra.Draw(rect_play);
 
-                    gioca = new Text("PLAY", font, 20);
-                    gioca.FillColor = new Color(255, 255, 255);
-                    gioca.Position = new Vector2f(929, 544);
+                    gioca = new Text("PLAY", font, 20)
+                    {
+                        FillColor = new Color(255, 255, 255),
+                        Position = new Vector2f(929, 544)
+                    };
                     Finestra.Draw(gioca);
                 }
                 // TASTO SHOP
                 {
-                    RectangleShape rect_shop = new RectangleShape(new Vector2f(120, 60));
-                    rect_shop.FillColor = new Color(100, 100, 100, 220);
-                    rect_shop.Position = new Vector2f(14, 525);
+                    RectangleShape rect_shop = new RectangleShape(new Vector2f(120, 60))
+                    {
+                        FillColor = new Color(100, 100, 100, 220),
+                        Position = new Vector2f(14, 525)
+                    };
                     Finestra.Draw(rect_shop);
 
-                    shop = new Text("SHOP", font, 20);
-                    shop.FillColor = new Color(255, 255, 255);
+                    shop = new Text("SHOP", font, 20)
+                    {
+                        FillColor = new Color(255, 255, 255)
+                    };
                     shop.FillColor = new Color(255, 255, 255);
                     shop.Position = new Vector2f(29, 544);
                     Finestra.Draw(shop);
@@ -136,24 +140,30 @@ namespace Plants_Vs_Zombies
                 {
                     // Rettangolo nero (cornice)
                     {
-                        RectangleShape rect = new RectangleShape(new Vector2f(690, 285));
-                        rect.FillColor = new Color(0, 0, 0, 170);
+                        RectangleShape rect = new RectangleShape(new Vector2f(690, 285))
+                        {
+                            FillColor = new Color(0, 0, 0, 170)
+                        };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
                         rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 20);
                         Finestra.Draw(rect);
                     }
                     // Rettangolo verde
                     {
-                        RectangleShape rect = new RectangleShape(new Vector2f(675, 270));
-                        rect.FillColor = new Color(0, 207, 45, 210);
+                        RectangleShape rect = new RectangleShape(new Vector2f(675, 270))
+                        {
+                            FillColor = new Color(0, 207, 45, 210)
+                        };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
                         rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 20);
                         Finestra.Draw(rect);
                     }
 
-                    seleziona_piante = new Text("PIANTE SELEZIONATE", font, 20);
-                    seleziona_piante.FillColor = new Color(255, 255, 255);
-                    seleziona_piante.Position = new Vector2f(336, 215);
+                    seleziona_piante = new Text("PIANTE SELEZIONATE", font, 20)
+                    {
+                        FillColor = new Color(255, 255, 255),
+                        Position = new Vector2f(336, 215)
+                    };
                     Finestra.Draw(seleziona_piante);
 
                     // piante selezionate
@@ -164,9 +174,9 @@ namespace Plants_Vs_Zombies
 
                         for (int y = 0; y < 2; y++)
                             for (int x = 0; x < 4; x++)
-                                if (piante[4 * y + x] != null)
-                                    piante[4 * y + x].DisegnaLista(new Vector2f(203 + (637 - larghezza) / 3 * x,
-                                                                                275 + (161 - altezza) * y), scala);
+                                if (piante[(4 * y) + x] != null)
+                                    piante[(4 * y) + x].DisegnaLista(new Vector2f(203 + ((637 - larghezza) / 3 * x),
+                                                                                275 + ((161 - altezza) * y)), scala);
                     }
                 }
             }

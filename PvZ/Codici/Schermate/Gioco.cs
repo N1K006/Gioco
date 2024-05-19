@@ -1,13 +1,13 @@
-using System;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using SFML.Window;
-using SFML.Audio;
 using System.Timers;
-using System.IO;
 
 namespace Plants_Vs_Zombies
 {
@@ -104,7 +104,7 @@ namespace Plants_Vs_Zombies
         Timer Vel_Zombie = new Timer(5000); // tempo per aumentare la velocita di spawn
 
         Timer Diff = new Timer(1000); // tempo per cambiare gli zombie che spawnano
-        int cDiff = 1; 
+        int cDiff = 1;
         public int difficolta = 0; // zombie che spawnano
 
 
@@ -410,8 +410,10 @@ namespace Plants_Vs_Zombies
                 contatore = 0;
                 lock (LockSoli)
                 {
-                    Sole s = new Sole();
-                    s.value_sun = 25;
+                    Sole s = new Sole
+                    {
+                        value_sun = 25
+                    };
                 }
             }
         }
@@ -465,12 +467,14 @@ namespace Plants_Vs_Zombies
             {
                 C_S.Origin = new Vector2f(50, 50);
                 C_S.Scale = new Vector2f(0.65f, 0.65f);
-                C_S.Position = new Vector2f(155 + C_S.Origin.X * C_S.Scale.X, 0 + C_S.Origin.Y * C_S.Scale.Y);
+                C_S.Position = new Vector2f(155 + (C_S.Origin.X * C_S.Scale.X), 0 + (C_S.Origin.Y * C_S.Scale.Y));
                 Finestra.Draw(C_S);  // Contatore soli
 
-                Text n_sole = new Text(Convert.ToString(n_soli), numeri, 13);
-                n_sole.FillColor = Color.White;
-                n_sole.Position = new Vector2f(235, 26);
+                Text n_sole = new Text(Convert.ToString(n_soli), numeri, 13)
+                {
+                    FillColor = Color.White,
+                    Position = new Vector2f(235, 26)
+                };
                 Finestra.Draw(n_sole); //Numero soli
             }
             // Piante nella mappa
@@ -495,15 +499,17 @@ namespace Plants_Vs_Zombies
                 for (int i = 0; i < 8; i++)
                 {
                     if (Lista_piante[i] != null)
-                        Lista_piante[i].DisegnaLista(new Vector2f(25, 65 * i + 10), yLista == i ? new Vector2f(0.36f, 0.36f) :
+                        Lista_piante[i].DisegnaLista(new Vector2f(25, (65 * i) + 10), yLista == i ? new Vector2f(0.36f, 0.36f) :
                                                                                                   new Vector2f(0.34f, 0.34f));
 
                     if (Lista_piante[i] != null)
                         if (!Lista_piante[i].GetInstace().Disponibile())
                         {
-                            RectangleShape rect = new RectangleShape(new Vector2f(115, 58));
-                            rect.FillColor = new Color(100, 100, 100, 150);
-                            rect.Position = new Vector2f(25, 65 * i + 10);
+                            RectangleShape rect = new RectangleShape(new Vector2f(115, 58))
+                            {
+                                FillColor = new Color(100, 100, 100, 150),
+                                Position = new Vector2f(25, (65 * i) + 10)
+                            };
                             Finestra.Draw(rect);
                         }
                 }
@@ -512,12 +518,14 @@ namespace Plants_Vs_Zombies
             {
                 C_M.Origin = new Vector2f(75, 75);
                 C_M.Scale = new Vector2f(0.35f, 0.35f);
-                C_M.Position = new Vector2f(10 + C_M.Origin.X * C_M.Scale.X, 535 + C_M.Origin.X * C_M.Scale.X);
+                C_M.Position = new Vector2f(10 + (C_M.Origin.X * C_M.Scale.X), 535 + (C_M.Origin.X * C_M.Scale.X));
                 Finestra.Draw(C_M);  // Contatore soli
 
-                Text num_monete = new Text(Convert.ToString(Program.monete), numeri, 13);
-                num_monete.FillColor = Color.White;
-                num_monete.Position = new Vector2f(80, 554.5f);
+                Text num_monete = new Text(Convert.ToString(Program.monete), numeri, 13)
+                {
+                    FillColor = Color.White,
+                    Position = new Vector2f(80, 554.5f)
+                };
                 Finestra.Draw(num_monete); // Numero monete
             }
             // Soli, monete e semi
@@ -564,54 +572,66 @@ namespace Plants_Vs_Zombies
                 {
                     // PAUSA
                     {
-                        RectangleShape rect = new RectangleShape(new Vector2f(220, 300));
-                        rect.FillColor = new Color(100, 100, 100, 220);
+                        RectangleShape rect = new RectangleShape(new Vector2f(220, 300))
+                        {
+                            FillColor = new Color(100, 100, 100, 220)
+                        };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
                         rect.Position = new Vector2f(Finestra.Size.X / 2, Finestra.Size.Y / 2);
                         Finestra.Draw(rect);
                     }
                     // Tasto Riprendi
                     {
-                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50));
-                        rect.FillColor = new Color(30, 30, 30, 220);
+                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
+                        {
+                            FillColor = new Color(30, 30, 30, 220)
+                        };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        rect.Position = new Vector2f(Finestra.Size.X / 2, Finestra.Size.Y / 2 - 100);
+                        rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) - 100);
                         Finestra.Draw(rect);
 
-                        Text home = new Text("RIPRENDI", Home.font, 15);
-                        home.FillColor = Color.White;
-                        home.Origin = new Vector2f(0, 0);
-                        home.Position = new Vector2f(Finestra.Size.X / 2 - 60, Finestra.Size.Y / 2 - 105);
+                        Text home = new Text("RIPRENDI", Home.font, 15)
+                        {
+                            FillColor = Color.White,
+                            Origin = new Vector2f(0, 0),
+                            Position = new Vector2f((Finestra.Size.X / 2) - 60, (Finestra.Size.Y / 2) - 105)
+                        };
                         Finestra.Draw(home);
                     }
                     // Tasto Ricomincia
                     {
-                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50));
-                        rect.FillColor = new Color(30, 30, 30, 220);
+                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
+                        {
+                            FillColor = new Color(30, 30, 30, 220)
+                        };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        rect.Position = new Vector2f(Finestra.Size.X / 2, Finestra.Size.Y / 2 - 30);
+                        rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) - 30);
                         Finestra.Draw(rect);
 
-                        Text home = new Text("RICOMINCIA", Home.font, 15);
-                        home.FillColor = Color.White;
-                        home.Origin = new Vector2f(0, 0);
-                        home.Position = new Vector2f(Finestra.Size.X / 2 - 74, Finestra.Size.Y / 2 - 38);
+                        Text home = new Text("RICOMINCIA", Home.font, 15)
+                        {
+                            FillColor = Color.White,
+                            Origin = new Vector2f(0, 0),
+                            Position = new Vector2f((Finestra.Size.X / 2) - 74, (Finestra.Size.Y / 2) - 38)
+                        };
                         Finestra.Draw(home);
                     }
                     // Tasto Muta
                     {
                         {
-                            RectangleShape rect = new RectangleShape(new Vector2f(170, 50));
-                            rect.FillColor = new Color(30, 30, 30, 220);
+                            RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
+                            {
+                                FillColor = new Color(30, 30, 30, 220)
+                            };
                             rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                            rect.Position = new Vector2f(Finestra.Size.X / 2, Finestra.Size.Y / 2 + 40);
+                            rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 40);
                             Finestra.Draw(rect);
                         }
                         // Quadratino per muto
                         {
                             RectangleShape rect = new RectangleShape(new Vector2f(20, 20));
                             rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                            rect.Position = new Vector2f(Finestra.Size.X / 2 + 62, Finestra.Size.Y / 2 + 40);
+                            rect.Position = new Vector2f((Finestra.Size.X / 2) + 62, (Finestra.Size.Y / 2) + 40);
 
                             if (muto)
                                 rect.FillColor = Color.Red;
@@ -620,24 +640,30 @@ namespace Plants_Vs_Zombies
                             Finestra.Draw(rect);
                         }
 
-                        Text home = new Text("MUTO", Home.font, 15);
-                        home.FillColor = Color.White;
-                        home.Origin = new Vector2f(0, 0);
-                        home.Position = new Vector2f(Finestra.Size.X / 2 - 70, Finestra.Size.Y / 2 + 32);
+                        Text home = new Text("MUTO", Home.font, 15)
+                        {
+                            FillColor = Color.White,
+                            Origin = new Vector2f(0, 0),
+                            Position = new Vector2f((Finestra.Size.X / 2) - 70, (Finestra.Size.Y / 2) + 32)
+                        };
                         Finestra.Draw(home);
                     }
                     // Tasto Home
                     {
-                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50));
-                        rect.FillColor = new Color(30, 30, 30, 220);
+                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
+                        {
+                            FillColor = new Color(30, 30, 30, 220)
+                        };
                         rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        rect.Position = new Vector2f(Finestra.Size.X / 2, Finestra.Size.Y / 2 + 110);
+                        rect.Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 110);
                         Finestra.Draw(rect);
 
-                        Text home = new Text("HOME", Home.font, 15);
-                        home.FillColor = Color.White;
-                        home.Origin = new Vector2f(0, 0);
-                        home.Position = new Vector2f(Finestra.Size.X / 2 - 35, Finestra.Size.Y / 2 + 105);
+                        Text home = new Text("HOME", Home.font, 15)
+                        {
+                            FillColor = Color.White,
+                            Origin = new Vector2f(0, 0),
+                            Position = new Vector2f((Finestra.Size.X / 2) - 35, (Finestra.Size.Y / 2) + 105)
+                        };
                         Finestra.Draw(home);
                     }
                 }

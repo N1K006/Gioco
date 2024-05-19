@@ -1,11 +1,6 @@
-﻿using System;
-using SFML.Graphics;
-using SFML.System;
+﻿using SFML.Graphics;
 using SFML.Window;
-using SFML.Audio;
-using System.Timers;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Plants_Vs_Zombies
 {
