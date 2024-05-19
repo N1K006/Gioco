@@ -175,6 +175,7 @@ namespace Plants_Vs_Zombies
             for (int i = 0; i < 5; i++)
                 Mappa_zombie[i] = new List<Zombie>();
 
+            // Timer
             {
                 Zombie_On.Elapsed += Zombie_On_Elapsed;
                 Zombie_On.Enabled = true;
@@ -187,7 +188,7 @@ namespace Plants_Vs_Zombies
 
                 Diff.Elapsed += Diff_Elapsed;
                 Diff.Enabled = true;
-            }// Timer
+            }
 
             Finestra.MouseButtonPressed -= Home.MouseClick;
             Finestra.MouseButtonPressed += MouseClick;
@@ -248,22 +249,30 @@ namespace Plants_Vs_Zombies
                 }
             }
 
-            // Zombie e Piante
+            // Zombi e Piante
             {
+                // Porta disponibile la lista di piante
+                for (int i = 0; i < Lista_piante.Length; i++)
+                {
+                    Lista_piante[i].GetInstace().attesa.Stop();
+                    Lista_piante[i].GetInstace().attesa.Close();
+                    Lista_piante[i].GetInstace().Disponibile = true;
+                }
+
+                // Piante
                 for (int y = 0; y < 5; y++)
                 {
                     for (int x = 0; x < 9; x++)
                     {
                         if (Mappa_piante[x, y] != null)
                         {
-                            Mappa_piante[x, y].attesa.Stop();
-                            Mappa_piante[x, y].attesa.Close();
                             Mappa_piante[x, y].Vita = -999;
                             Mappa_piante[x, y] = null;
                         }
                     }
                 }
 
+                // Zombi
                 for (int i = 0; i < 5; i++)
                     for (int j = 0; j < Mappa_zombie[i].Count; j++)
                     {
@@ -320,7 +329,7 @@ namespace Plants_Vs_Zombies
                 {
                     if (Lista_piante[Y] == null)
                         Y = 8;
-                    else if (aux > 57 || y - 10 < 0 || !Lista_piante[Y].GetInstace().Disponibile())
+                    else if (aux > 57 || y - 10 < 0 || !Lista_piante[Y].GetInstace().Disponibile)
                         Y = 8;
                 }
                 yLista = Y;
@@ -388,7 +397,7 @@ namespace Plants_Vs_Zombies
                 ricomincia = true;
                 Reset();
             }
-            else
+            else // altro
             {
                 yLista = 8;
                 Paletta.presa = false;
@@ -451,7 +460,7 @@ namespace Plants_Vs_Zombies
         void PosizionaPianta(int x, int y)
         {
             if (Mappa_piante[x, y] == null && yLista != 8)
-                if (Lista_piante[yLista].GetInstace().Disponibile() && Lista_piante[yLista].GetInstace().costo_soli <= n_soli)
+                if (Lista_piante[yLista].GetInstace().Disponibile && Lista_piante[yLista].GetInstace().costo_soli <= n_soli)
                     Lista_piante[yLista].GetInstace(x, y);
             yLista = 8;
         }
@@ -503,7 +512,7 @@ namespace Plants_Vs_Zombies
                                                                                                   new Vector2f(0.34f, 0.34f));
 
                     if (Lista_piante[i] != null)
-                        if (!Lista_piante[i].GetInstace().Disponibile())
+                        if (!Lista_piante[i].GetInstace().Disponibile)
                         {
                             RectangleShape rect = new RectangleShape(new Vector2f(115, 58))
                             {
