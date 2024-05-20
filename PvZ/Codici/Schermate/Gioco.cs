@@ -19,6 +19,7 @@ namespace Plants_Vs_Zombies
         public object LockSemi = new object();
         public object LockSoli = new object();
         public object LockMonete = new object();
+        public object LockBoom = new object();
 
         public bool ricomincia = false;
 
@@ -89,14 +90,15 @@ namespace Plants_Vs_Zombies
 
         Timer Sun_On_Map = new Timer(4000);
 
+        public bool perso = false;
         public int yLista = 8;
         public int x, y;
         public int contatore = 5, n_soli = 50;
         public bool home = false, muto = false;
 
         #region Zombie
-        public static Zombie[] zombie = { new ZombieOrdinario(1f),
-                                          new ZombieSegnaletico(1f),
+        public static Zombie[] zombie = { new ZombieOrdinario(0f),
+                                          new ZombieSegnaletico(0f),
                                           new ZombieSecchione(0f) };
 
         public List<Zombie>[] Mappa_zombie = new List<Zombie>[5];
@@ -107,7 +109,6 @@ namespace Plants_Vs_Zombies
         Timer Diff = new Timer(30000); // tempo per cambiare gli zombie che spawnano
         int cDiff = 1;
         public int difficolta = 0; // zombie che spawnano
-
 
         public int Difficolta
         {
@@ -123,7 +124,7 @@ namespace Plants_Vs_Zombies
                         break;
                     }
                     else
-                        zombie[i].Probabilita -= zombie[i].Probabilita / 10;
+                        zombie[i].Probabilita -= zombie[i].Probabilita / 6.5f;
                 }
                 switch (value)
                 {
@@ -237,11 +238,28 @@ namespace Plants_Vs_Zombies
                     Sole.soli[i].Stop();
                     Sole.soli.Clear();
                 }
+                // Soli presi
                 for (int i = 0; i < Sole.soliPresi.Count(); i++)
                 {
                     Sole.soliPresi[i].Stop();
                     Sole.soliPresi.Clear();
                 }
+                // Boom esplosioni
+                for (int i = 0; i < Boom.esplosioni.Count(); i++)
+                {
+                    Boom.esplosioni[i]._boom.Stop();
+                    Boom.esplosioni[i]._boom.Close();
+                }
+                Boom.esplosioni.Clear();
+
+                // Zombi
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < Mappa_zombie[i].Count; j++)
+                    {
+                        Mappa_zombie[i][j].Vita = 0;
+                        Mappa_zombie[i].Clear();
+                    }
+
                 // Monete
                 for (int i = 0; i < Moneta.monete.Count(); i++)
                 {
@@ -250,7 +268,7 @@ namespace Plants_Vs_Zombies
                 }
             }
 
-            // Zombi e Piante
+            // Piante
             {
                 // Porta disponibile la lista di piante
                 foreach (Pianta p in Lista_piante)
@@ -258,7 +276,6 @@ namespace Plants_Vs_Zombies
                     if (p != null)
                         if (!p.GetInstace().Disponibile)
                             p.GetInstace().Disponibile = true;
-                        
                 }
 
                 // Piante
@@ -273,20 +290,13 @@ namespace Plants_Vs_Zombies
                         }
                     }
                 }
-
-                // Zombi
-                for (int i = 0; i < 5; i++)
-                    for (int j = 0; j < Mappa_zombie[i].Count; j++)
-                    {
-                        Mappa_zombie[i][j].Vita = 0;
-                        Mappa_zombie[i].Clear();
-                    }
             }
 
             System.Threading.Thread.Sleep(5);
 
             zombie = new Zombie[]{ new ZombieOrdinario(0f),
-                                   new ZombieSegnaletico(0f) };
+                                   new ZombieSegnaletico(0f),
+                                   new ZombieSecchione(0f) };
             Difficolta = 0;
             difficolta = 0;
             contatore = 5;
@@ -294,7 +304,10 @@ namespace Plants_Vs_Zombies
             home = false;
             muto = false;
             instance = null;
-            Program.fase = 0;
+            if (perso)
+                Program.fase = 1;
+            else
+                Program.fase = 0;
         }
 
         public void MouseClick(object sender, MouseButtonEventArgs e)
@@ -307,7 +320,7 @@ namespace Plants_Vs_Zombies
             bool s = false;
             bool m = false;
 
-            if (!home)
+            if (!home && !perso)
             {
                 lock (LockSoli)
                 {
@@ -322,7 +335,7 @@ namespace Plants_Vs_Zombies
                 }
             }
 
-            if (x > 24 && x < 140 && !home && !(s || m)) //lista selezionata
+            if (x > 24 && x < 140 && !home && !perso && !(s || m)) //lista selezionata
             {
                 int Y = y - 10;
                 int aux = Y % 65;
@@ -338,7 +351,7 @@ namespace Plants_Vs_Zombies
                 Paletta.presa = false;
                 Paletta.pos();
             }
-            else if (x > 253 && y > 71 && !home && !(s || m)) //casella selezionata
+            else if (x > 253 && y > 71 && !home && !perso && !(s || m)) //casella selezionata
             {
                 int X, Y;
                 X = (x - 254) / 81;
@@ -354,32 +367,33 @@ namespace Plants_Vs_Zombies
                         PosizionaPianta(X, Y);
                 }
             }
-            else if (x >= 327 && x <= 375 && y >= 13 && y <= 60 && !home && !(s || m)) // paletta
+            else if (x >= 327 && x <= 375 && y >= 13 && y <= 60 && !home && !perso && !(s || m)) // paletta
             {
                 Paletta.presa = true;
                 yLista = 8;
             }
-            else if (x >= 976 && x <= 1030 && y >= 16 && y <= 70) // Tasto Pausa
+            else if (x >= 976 && x <= 1030 && y >= 16 && y <= 70 && !perso) // Tasto Pausa
             {
                 Paletta.presa = false;
                 home = true;
                 yLista = 8;
             }
-            else if (x >= 437 && x <= 605 && y >= 175 && y <= 223 && home) // Tasto riprendi
+            else if (x >= 437 && x <= 605 && y >= 175 && y <= 223 && home && !perso) // Tasto riprendi
             {
                 home = false;
                 Paletta.presa = false;
                 yLista = 8;
             }
-            else if (x >= 437 && x <= 605 && y >= 385 && y <= 435 && home && !(s || m)) // Tasto Home
+            else if (x >= 437 && x <= 605 && y >= 385 && y <= 435 && home && !perso && !(s || m)) // Tasto Home
             {
                 Home.schermata = 0;
                 Program.fase = 0;
                 home = false;
                 Paletta.presa = false;
                 yLista = 8;
+                Reset();
             }
-            else if (x >= 437 && x <= 606 && y >= 315 && y <= 363 && home) // Tasto Muta
+            else if (x >= 437 && x <= 606 && y >= 315 && y <= 363 && home && !perso) // Tasto Muta
             {
                 Paletta.presa = false;
                 home = true;
@@ -391,10 +405,29 @@ namespace Plants_Vs_Zombies
                 else
                     SUONO_GIOCO.Volume = 100;
             }
-            else if (x >= 437 && x <= 606 && y >= 245 && y <= 295 && home) // Tasto Ricomincia
+            else if (x >= 437 && x <= 606 && y >= 245 && y <= 295 && home && !perso) // Tasto Ricomincia
             {
                 Paletta.presa = false;
                 home = false;
+                yLista = 8;
+                ricomincia = true;
+                Reset();
+            }
+            else if (x >= 460 && x <= 709 && y >= 316 && y <= 408 && perso) // Tasto Home quando hai perso
+            {
+                Home.schermata = 0;
+                Program.fase = 0;
+                home = false;
+                perso = false;
+                Paletta.presa = false;
+                yLista = 8;
+                Reset();
+            }
+            else if (x >= 460 && x <= 709 && y >= 420 && y <= 515 && perso) // Tasto Ricomincia quando hai perso
+            {
+                Paletta.presa = false;
+                home = false;
+                perso = false;
                 yLista = 8;
                 ricomincia = true;
                 Reset();
@@ -571,8 +604,15 @@ namespace Plants_Vs_Zombies
                         if (Moneta.monetePrese != null)
                             Finestra.Draw(Moneta.monetePrese[i].moneta);
                 }
+                lock (LockBoom)
+                {
+                    if (!ricomincia)
+                        for (int i = 0; i < Boom.esplosioni.Count; i++)
+                            if (Boom.esplosioni[i] != null)
+                                Finestra.Draw(Boom.esplosioni[i].BOOM);
+                }
             }
-            //Abbandona da finire
+            //Abbandona
             {
                 T_H.Origin = new Vector2f(T_H.Texture.Size.X / 2, T_H.Texture.Size.X / 2);
                 T_H.Scale = new Vector2f(0.07f, 0.07f);
@@ -688,6 +728,48 @@ namespace Plants_Vs_Zombies
                 Cerchio_Paletta.Origin = new Vector2f(301, 301);
                 Finestra.Draw(Cerchio_Paletta); //Cerchio
                 Finestra.Draw(Paletta.sprite); //Paletta
+            }
+
+            // Scritta Hai perso
+            if (perso)
+            {
+                Text perso = new Text("HAI PERSO", Home.font, 50)
+                {
+                    FillColor = Color.White,
+                    Origin = new Vector2f(0, 0),
+                    Position = new Vector2f((Finestra.Size.X / 2) - 140, (Finestra.Size.Y / 2) - 90)
+                };
+                Finestra.Draw(perso);
+
+                RectangleShape rect1 = new RectangleShape(new Vector2f(250, 200))
+                {
+                    FillColor = new Color(30, 30, 30, 220),
+                    Position = new Vector2f(460, 317)
+                };
+                Finestra.Draw(rect1);
+
+                RectangleShape rect2 = new RectangleShape(new Vector2f(250, 10))
+                {
+                    FillColor = new Color(100, 100, 100, 220),
+                    Position = new Vector2f(460, 410)
+                };
+                Finestra.Draw(rect2);
+
+                Text home = new Text("HOME", Home.font, 20)
+                {
+                    FillColor = Color.White,
+                    Origin = new Vector2f(0, 0),
+                    Position = new Vector2f(532, 360)
+                };
+                Finestra.Draw(home);
+
+                Text ricomincia = new Text("RICOMINCIA", Home.font, 20)
+                {
+                    FillColor = Color.White,
+                    Origin = new Vector2f(0, 0),
+                    Position = new Vector2f(488,455)
+                };
+                Finestra.Draw(ricomincia);
             }
         }
     }

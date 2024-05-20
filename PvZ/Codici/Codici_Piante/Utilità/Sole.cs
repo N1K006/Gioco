@@ -120,6 +120,7 @@ namespace Plants_Vs_Zombies
             sole.Scale = new Vector2f(0.18f, 0.18f);
             sole.Position = new Vector2f(0, -200);
         }
+
         public void Preso()
         {
             preso = true;
