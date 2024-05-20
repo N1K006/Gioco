@@ -22,8 +22,8 @@ namespace Plants_Vs_Zombies
                                           new MuroNoce(),
                                           new InfiNoce(),
                                           new CiliegeEsplosive(),
-                                          new Peperoncino()
-                                          /*new KiwiBestiale()*/ };
+                                          new Peperoncino(),
+                                          new KiwiBestiale() };
 
         public static List<Pianta> piante_ottenute = new();
 
