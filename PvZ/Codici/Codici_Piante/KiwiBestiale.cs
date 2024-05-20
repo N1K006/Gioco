@@ -56,10 +56,15 @@ namespace Plants_Vs_Zombies
         {
             vita = 150;
             danno = 7;
+
             disponibile = false;
             attesa = new Timer(15000);
             attesa.Start();
             attesa.Elapsed += attesa_Elapsed;
+
+            Attack_On.Enabled = true;
+            Attack_On.Elapsed += Attack_On_Elapsed;
+
             for (int i = 0; i < 8; i++)
                 if (gioco.Lista_piante[i] != null)
                     if (gioco.Lista_piante[i] is KiwiBestiale)
