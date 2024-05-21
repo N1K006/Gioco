@@ -39,7 +39,7 @@ namespace Plants_Vs_Zombies
 
             X = x; Y = y;
 
-            rect = new IntRect(174, 46, 202, 210);
+            rect = new IntRect(144, 3, 293, 239);
             texture = new Texture(@"..\..\..\Immagini\Piante\Piante\Peperoncino.png", rect);
             pianta.Texture = texture;
             pianta.Position += new Vector2f(12, 25);
@@ -51,7 +51,7 @@ namespace Plants_Vs_Zombies
 
         public Peperoncino()
         {
-            costo_soli = 150;
+            costo_soli = 125;
             costo_monete = 1150;
         }
 
@@ -72,16 +72,17 @@ namespace Plants_Vs_Zombies
             disponibile = true;
             attesa.Stop();
         }
+
         void brucia_Elapsed(object sender, ElapsedEventArgs e)
         {
             lock (gioco.LockZombie)
                 while (gioco.Mappa_zombie[Y].Count > 0)
                     gioco.Mappa_zombie[Y][0].Vita = -999;
 
-            brucia.Stop();
-            brucia.Close();
             base.Vita = 0;
-        }
+            Stop();
+            new Boom(pianta.Position);
+        } 
 
         public override Peperoncino GetInstace()
         {
@@ -93,9 +94,11 @@ namespace Plants_Vs_Zombies
             get => disponibile;
             set => disponibile = value;
         }
+
         public override void Stop()
         {
             brucia.Stop();
+            brucia.Close();
         }
     }
 }

@@ -99,6 +99,8 @@ namespace Plants_Vs_Zombies
                     gioco.Mappa_zombie[fila].Remove(this);
                 }
                 ((Timer)sender).Stop();
+                gioco.perso = true;
+                gioco.Reset();
             }
             int RallMax()
             {

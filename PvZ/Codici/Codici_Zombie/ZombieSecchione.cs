@@ -41,7 +41,7 @@ namespace Plants_Vs_Zombies
             texture = new Texture(@"..\..\..\Immagini\Zombie\Zombie_secchione\Zombie_secchione.png", rect);
             sprite.Texture = texture;
             sprite.Position = new Vector2f(sprite.Position.X, sprite.Position.Y - 23);
-            sprite.Scale = new Vector2f(-0.090f, 0.090f);
+            sprite.Scale = new Vector2f(-0.120f, 0.121f);
             {
                 Mov_Zombie.Elapsed += Mov_Zombie_Elapsed;
                 Mov_Zombie.Enabled = true;
@@ -99,6 +99,8 @@ namespace Plants_Vs_Zombies
                     gioco.Mappa_zombie[fila].Remove(this);
                 }
                 ((Timer)sender).Stop();
+                gioco.perso = true;
+                gioco.Reset();
             }
             int RallMax()
             {

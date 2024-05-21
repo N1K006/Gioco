@@ -39,7 +39,7 @@ namespace Plants_Vs_Zombies
 
             X = x; Y = y;
 
-            rect = new IntRect(174, 46, 202, 210);
+            rect = new IntRect(105, 12, 308, 224);
             texture = new Texture(@"..\..\..\Immagini\Piante\Piante\CiliegieEsplosive.png", rect);
             pianta.Texture = texture;
             pianta.Position += new Vector2f(12, 25);
@@ -109,10 +109,10 @@ namespace Plants_Vs_Zombies
                         }
                 }
             }
-
-            esplodi.Stop();
-            esplodi.Close();
+            
             base.Vita = 0;
+            Stop();
+            new Boom(pianta.Position);
         }
 
         public override CiliegeEsplosive GetInstace()
@@ -128,6 +128,7 @@ namespace Plants_Vs_Zombies
         public override void Stop()
         {
             esplodi.Stop();
+            esplodi.Close();
         }
     }
 }
