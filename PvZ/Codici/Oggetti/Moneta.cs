@@ -47,6 +47,9 @@ namespace Plants_Vs_Zombies
                 Random r = new Random();
                 moneta.Position += new Vector2f(r.Next(-10, 50), 30);
 
+                if(moneta.Position.X > 1040)
+                    moneta.Position = new Vector2f(1040, moneta.Position.Y);
+
                 y = (int)moneta.Position.Y + r.Next(0, 50);
 
                 Muovi.Elapsed += Muovi_Elapsed; ;

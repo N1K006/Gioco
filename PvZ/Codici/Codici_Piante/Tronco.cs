@@ -83,13 +83,13 @@ namespace Plants_Vs_Zombies
                             Vector2f pos = s.circle.Position;
                             if (s is SemeDefault)
                             {
-                                SemeInfuocato auxS = new SemeInfuocato(new Vector2f((float)((pos.X - 314) / 81), (float)((pos.Y - 110)/ 100)), s.danno * 2);
+                                SemeInfuocato auxS = new SemeInfuocato(new Vector2f((float)((pos.X - 314) / 81), (float)((pos.Y - 122)/ 100)), s.danno * 2);
                                 s.Stop();
                                 auxS.trasformato = true;
                             }
                             else if (s is SemeBrina)
                             {
-                                SemeDefault auxS = new SemeDefault(new Vector2f((float)((pos.X - 314) / 81), (float)((pos.Y - 110) / 100)), s.danno);
+                                SemeDefault auxS = new SemeDefault(new Vector2f((float)((pos.X - 314) / 81), (float)((pos.Y - 122) / 100)), s.danno);
                                 s.Stop();
                                 auxS.trasformato = true;
                             }

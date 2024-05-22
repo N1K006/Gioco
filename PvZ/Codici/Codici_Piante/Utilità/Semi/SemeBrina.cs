@@ -29,7 +29,7 @@ namespace Plants_Vs_Zombies
 			{
 				FillColor = Color.Cyan,
 				Origin = new Vector2f(5, 5),
-				Position = new Vector2f(254 + p.X * 81 + 60, 100 + p.Y * 100 + 10)
+				Position = new Vector2f(254 + p.X * 81, 122 + p.Y * 100)
 			};
 
 			fila = (int)p.Y;
