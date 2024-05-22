@@ -13,6 +13,7 @@ namespace Plants_Vs_Zombies
 {
     abstract class Seme
     {
+        public bool trasformato = false;
         public static Gioco gioco;
         public static List<Seme> semi = new List<Seme>();
         public CircleShape circle;

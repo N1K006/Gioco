@@ -61,13 +61,13 @@ namespace Plants_Vs_Zombies
             rect = new IntRect(102, 14, 309, 264);
             texture = new Texture(@"..\..\..\Immagini\Piante\Piante\Triplasparasemi.png", rect);
             pianta.Texture = texture;
-            pianta.Position += new Vector2f(0, 18);
+            pianta.Position += new Vector2f(0, 25);
             pianta.Scale = new Vector2f(0.29f, 0.29f);
         }
         public Triplasparasemi()
         {
             costo_soli = 300;
-            costo_monete = 580;
+            costo_monete = /*58*/0;
         }
 
         public bool Spara()

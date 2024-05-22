@@ -60,7 +60,7 @@ namespace Plants_Vs_Zombies
             rect = new IntRect(174, 46, 202, 210);
             texture = new Texture(@"..\..\..\Immagini\Piante\Piante\Sparasemi.png", rect);
             pianta.Texture = texture;
-            pianta.Position += new Vector2f(12, 25);
+            pianta.Position += new Vector2f(12, 40);
             pianta.Scale = new Vector2f(0.29f, 0.29f);
         }
 

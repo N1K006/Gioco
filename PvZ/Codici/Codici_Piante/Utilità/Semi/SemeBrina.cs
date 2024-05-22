@@ -111,6 +111,7 @@ namespace Plants_Vs_Zombies
 		public override void Stop()
         {
 			Mov_Seme.Stop();
+			Mov_Seme.Close();
 			semi.Remove(this);
         }
 	}

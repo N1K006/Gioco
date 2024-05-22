@@ -6,14 +6,13 @@ using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using System.Threading;
 using System.Timers;
 
 namespace Plants_Vs_Zombies
 {
     class SemeInfuocato : Seme
     {
-        System.Timers.Timer Mov_Seme = new System.Timers.Timer(5);
+        public Timer Mov_Seme = new Timer(5);
 
         public SemeInfuocato(Vector2f p, int danno)
         {
@@ -22,7 +21,7 @@ namespace Plants_Vs_Zombies
 
             circle = new CircleShape(10, 10)
             {
-                FillColor = Color.Green,
+                FillColor = Color.Red,
                 Origin = new Vector2f(5, 5),
                 Position = new Vector2f(254 + p.X * 81 + 60, 100 + p.Y * 100 + 10)
             };
@@ -60,27 +59,32 @@ namespace Plants_Vs_Zombies
         {
             Zombie z = null;
 
-            lock (gioco.LockZombie)
+            if (Program.fase != 0)
             {
-                if (fila != 5)
+                lock (gioco.LockZombie)
                 {
-                    for (int i = 0; i < gioco.Mappa_zombie[fila].Count; i++)
-                        if (z == null && Tocca(gioco.Mappa_zombie[fila][i]))
-                            try
-                            {
-                                if (gioco.Mappa_zombie[fila][i] != null)
-                                    z = gioco.Mappa_zombie[fila][i];
-                            }
-                            catch (Exception) { }
-                        else if (z != null)
-                            if (z.sprite.Position.X > gioco.Mappa_zombie[fila][i].sprite.Position.X && Tocca(gioco.Mappa_zombie[fila][i]))
+                    if (fila != 5)
+                    {
+                        for (int i = 0; i < gioco.Mappa_zombie[fila].Count; i++)
+                            if (z == null && Tocca(gioco.Mappa_zombie[fila][i]))
                                 try
                                 {
                                     if (gioco.Mappa_zombie[fila][i] != null)
                                         z = gioco.Mappa_zombie[fila][i];
                                 }
                                 catch (Exception) { }
+                            else if (z != null)
+                                if (z.sprite.Position.X > gioco.Mappa_zombie[fila][i].sprite.Position.X && Tocca(gioco.Mappa_zombie[fila][i]))
+                                    try
+                                    {
+                                        if (gioco.Mappa_zombie[fila][i] != null)
+                                            z = gioco.Mappa_zombie[fila][i];
+                                    }
+                                    catch (Exception) { }
+                    }
                 }
+
+
             }
             return z;
 
@@ -97,9 +101,11 @@ namespace Plants_Vs_Zombies
                 return false;
             }
         }
+
         public override void Stop()
         {
             Mov_Seme.Stop();
+            Mov_Seme.Close();
             semi.Remove(this);
         }
     }

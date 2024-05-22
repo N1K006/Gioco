@@ -20,11 +20,11 @@ namespace Plants_Vs_Zombies
         public static bool disponibile = true;
         public readonly int X, Y;
 
-        Timer Attack_On = new Timer(1500);
+        Timer Attack_On = new Timer(10);
         int danno;
         int fase = 1;
 
-        
+        Vector2f pos;
 
         public override int Vita
         {
@@ -45,9 +45,17 @@ namespace Plants_Vs_Zombies
                         base.Vita = 0;
                     }
                     else if (vita < 50)
+                    {
                         fase = 3;
+                        pianta.Scale = new Vector2f(0.39f, 0.39f); // 67 * 80
+                        pianta.Position = pos + new Vector2f(5, 18);
+                    }
                     else if (vita < 100)
+                    {
                         fase = 2;
+                        pianta.Scale = new Vector2f(0.345f, 0.345f); // 60 * 71
+                        pianta.Position = pos + new Vector2f(9, 27);
+                    }
                 }
             }
         }
@@ -72,15 +80,19 @@ namespace Plants_Vs_Zombies
                         gioco.n_soli -= gioco.Lista_piante[i].costo_soli;
                         break;
                     }
-            rect = new IntRect(116, 5, 183, 225);
+            rect = new IntRect(122, 10, 173, 204); // casella = 81 * 100
             texture = new Texture(@"..\..\..\Immagini\Piante\Piante\KiwiBestiale.png", rect);
             pianta.Texture = texture;
-            pianta.Scale = new Vector2f(0.3f, 0.3f);
+
+            pos = pianta.Position;
+
+            pianta.Scale = new Vector2f(0.3f, 0.3f); // 52 * 62
+            pianta.Position = pos + new Vector2f(13, 37);
         }
 
         public KiwiBestiale()
         {
-            costo_soli = 0;
+            costo_soli = 175;
             costo_monete = 0;
         }
 
@@ -119,11 +131,11 @@ namespace Plants_Vs_Zombies
             {
                 lock (gioco.LockZombie)
                 {
-                    for (int i = 0; i < gioco.Mappa_zombie[Y - 1].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y - 1][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
+                    for (int i = 0; i < gioco.Mappa_zombie[Y - 2].Count; i++)
+                        if (Math.Abs(gioco.Mappa_zombie[Y - 2][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
                         {
-                            Logger.WriteLine(gioco.Mappa_zombie[Y - 1][i].Vita.ToString(), 6);
-                            gioco.Mappa_zombie[Y - 1][i].Vita -= danno * fase;
+                            Logger.WriteLine(gioco.Mappa_zombie[Y - 2][i].Vita.ToString(), 6);
+                            gioco.Mappa_zombie[Y - 2][i].Vita -= danno * fase;
                             i--;
                         }
                 }
@@ -148,7 +160,7 @@ namespace Plants_Vs_Zombies
                 for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
                     if (Math.Abs(gioco.Mappa_zombie[Y][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
                     {
-                        Logger.WriteLine(gioco.Mappa_zombie[Y - 1][i].Vita.ToString(), 6);
+                        Logger.WriteLine(gioco.Mappa_zombie[Y][i].sprite.Position.ToString(), 6);
                         gioco.Mappa_zombie[Y][i].Vita -= danno * fase;
                         i--;
                     }
@@ -161,7 +173,7 @@ namespace Plants_Vs_Zombies
                     for (int i = 0; i < gioco.Mappa_zombie[Y + 1].Count; i++)
                         if (Math.Abs(gioco.Mappa_zombie[Y + 1][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
                         {
-                            Logger.WriteLine(gioco.Mappa_zombie[Y - 1][i].Vita.ToString(), 6);
+                            Logger.WriteLine(gioco.Mappa_zombie[Y + 1][i].Vita.ToString(), 6);
                             gioco.Mappa_zombie[Y + 1][i].Vita -= danno * fase;
                             i--;
                         }
@@ -172,11 +184,11 @@ namespace Plants_Vs_Zombies
             {
                 lock (gioco.LockZombie)
                 {
-                    for (int i = 0; i < gioco.Mappa_zombie[Y + 1].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y + 1][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
+                    for (int i = 0; i < gioco.Mappa_zombie[Y + 2].Count; i++)
+                        if (Math.Abs(gioco.Mappa_zombie[Y + 2][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
                         {
-                            Logger.WriteLine(gioco.Mappa_zombie[Y - 1][i].Vita.ToString(), 6);
-                            gioco.Mappa_zombie[Y + 1][i].Vita -= danno * fase;
+                            Logger.WriteLine(gioco.Mappa_zombie[Y + 2][i].Vita.ToString(), 6);
+                            gioco.Mappa_zombie[Y + 2][i].Vita -= danno * fase;
                             i--;
                         }
                 }
