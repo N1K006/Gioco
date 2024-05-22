@@ -94,7 +94,7 @@ namespace Plants_Vs_Zombies
         public int yLista = 8;
         public int x, y;
         public int contatore = 5, n_soli = 50;
-        public bool home = false, muto = false;
+        public bool home = false, muto = false, esci = false;
 
         #region Zombie
         public static Zombie[] zombie = { new ZombieOrdinario(0f),
@@ -106,7 +106,7 @@ namespace Plants_Vs_Zombies
         Timer Zombie_On = new Timer(5000); // velocita di spawn
         Timer Vel_Zombie = new Timer(5000); // tempo per aumentare la velocita di spawn
 
-        Timer Diff = new Timer(30000); // tempo per cambiare gli zombie che spawnano
+        Timer Diff = new Timer(10); // tempo per cambiare gli zombie che spawnano
         int cDiff = 1;
         public int difficolta = 0; // zombie che spawnano
 
@@ -200,6 +200,9 @@ namespace Plants_Vs_Zombies
 
             while (Finestra.IsOpen && Program.fase == 1)
             {
+                if (ricomincia || esci)
+                    break;
+
                 if (SUONO_GIOCO.Status == SoundStatus.Stopped)
                     SUONO_GIOCO.Play();
 
@@ -208,12 +211,14 @@ namespace Plants_Vs_Zombies
                 Finestra.DispatchEvents();
                 Finestra.Display();
             }
-
-            if (ricomincia)
+            if (ricomincia && !esci)
+            {
+                ricomincia = false;
                 Program.fase = 1;
-            else
-                Reset();
-            ricomincia = false;
+            }
+            else if (esci && !ricomincia)
+                Program.fase = 0;
+            Reset();
         }
 
         public void Reset()
@@ -249,17 +254,15 @@ namespace Plants_Vs_Zombies
                 {
                     Boom.esplosioni[i]._boom.Stop();
                     Boom.esplosioni[i]._boom.Close();
+                    Boom.esplosioni.Clear();
                 }
-                Boom.esplosioni.Clear();
-
                 // Zombi
                 for (int i = 0; i < 5; i++)
+                {
                     for (int j = 0; j < Mappa_zombie[i].Count; j++)
-                    {
                         Mappa_zombie[i][j].Vita = 0;
-                        Mappa_zombie[i].Clear();
-                    }
-
+                    Mappa_zombie[i].Clear();
+                }
                 // Monete
                 for (int i = 0; i < Moneta.monete.Count(); i++)
                 {
@@ -300,14 +303,10 @@ namespace Plants_Vs_Zombies
             Difficolta = 0;
             difficolta = 0;
             contatore = 5;
-            n_soli = 5000;
+            n_soli = 50;
             home = false;
             muto = false;
             instance = null;
-            if (perso)
-                Program.fase = 1;
-            else
-                Program.fase = 0;
         }
 
         public void MouseClick(object sender, MouseButtonEventArgs e)
@@ -387,9 +386,10 @@ namespace Plants_Vs_Zombies
             else if (x >= 437 && x <= 605 && y >= 385 && y <= 435 && home && !perso && !(s || m)) // Tasto Home
             {
                 Home.schermata = 0;
-                Program.fase = 0;
+                esci = true;
                 home = false;
                 Paletta.presa = false;
+                ricomincia = false;
                 yLista = 8;
                 Reset();
             }
@@ -409,25 +409,27 @@ namespace Plants_Vs_Zombies
             {
                 Paletta.presa = false;
                 home = false;
+                esci = false;
                 yLista = 8;
                 ricomincia = true;
                 Reset();
             }
-            else if (x >= 460 && x <= 709 && y >= 316 && y <= 408 && perso) // Tasto Home quando hai perso
+            else if (x >= 460 && x <= 709 && y >= 316 && y <= 408 && perso && !home) // Tasto Home quando hai perso
             {
                 Home.schermata = 0;
-                Program.fase = 0;
+                esci = true;
                 home = false;
                 perso = false;
                 Paletta.presa = false;
+                ricomincia = false;
                 yLista = 8;
                 Reset();
             }
-            else if (x >= 460 && x <= 709 && y >= 420 && y <= 515 && perso) // Tasto Ricomincia quando hai perso
+            else if (x >= 460 && x <= 709 && y >= 420 && y <= 515 && perso && !home) // Tasto Ricomincia quando hai perso
             {
                 Paletta.presa = false;
                 home = false;
-                perso = false;
+                esci = false;
                 yLista = 8;
                 ricomincia = true;
                 Reset();
