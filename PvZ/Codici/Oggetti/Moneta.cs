@@ -52,7 +52,7 @@ namespace Plants_Vs_Zombies
 
                 y = (int)moneta.Position.Y + r.Next(0, 50);
 
-                Muovi.Elapsed += Muovi_Elapsed; ;
+                Muovi.Elapsed += Muovi_Elapsed;
                 Muovi.Start();
             }
         }
