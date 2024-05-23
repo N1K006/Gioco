@@ -7,16 +7,14 @@ namespace Plants_Vs_Zombies
 {
     class Supersparasemi : Pianta
     {
-        // Immagine lista di supersparasemi
+        // Immagine lista di sparasemi
         public static IntRect l_sup = new IntRect(0, 0, 340, 170);
         public static Texture L_sup = new Texture(@"..\..\..\Immagini\Piante\Lista_di_Piante\Lista_Supersparasemi.png", l_sup);
         public static readonly Sprite L_SUP = new Sprite(L_sup);
 
         public static bool disponibile = true;
-        private readonly int X, Y;
-
-        public Timer Seme_On = new Timer(1500);
-        public Timer Seme_On_2 = new Timer(400);
+        public readonly int X, Y;
+        public Timer Seme_On = new Timer(750);
 
         public override int Vita
         {
@@ -33,7 +31,6 @@ namespace Plants_Vs_Zombies
                     if (vita <= 0)
                     {
                         Seme_On.Close();
-                        Seme_On_2.Close();
                         base.Vita = 0;
                     }
                 }
@@ -67,10 +64,10 @@ namespace Plants_Vs_Zombies
             pianta.Scale = new Vector2f(0.31f, 0.31f);
         }
 
-        public Supersparasemi() 
-        { 
-            costo_soli = 200;
-            costo_monete = 300;
+        public Supersparasemi()
+        {
+            costo_soli = 100;
+            costo_monete = 0;
         }
 
         public bool Spara()
@@ -97,36 +94,25 @@ namespace Plants_Vs_Zombies
                 {
                     SemeDefault s = new SemeDefault(new Vector2f(X, Y), 10);
                 }
-                Seme_On_2.Elapsed += Seme_On_2_Elapsed;
-                Seme_On_2.Enabled = true;
             }
         }
 
-        private void Seme_On_2_Elapsed(object sender, ElapsedEventArgs e)
+        public override void GetInstace(int x, int y)
         {
-            lock (gioco.LockSemi)
-            {
-                SemeDefault s = new SemeDefault(new Vector2f(X, Y), 10);
-            }
-            Seme_On_2.Stop();
+            new Supersparasemi(x, y);
         }
 
         public override void DisegnaLista(Vector2f posizione, Vector2f scala)
         {
             L_SUP.Position = posizione;
             L_SUP.Scale = scala;
-                Gioco.Finestra.Draw(L_SUP);
-        }
+            Gioco.Finestra.Draw(L_SUP);
 
+        }
         void attesa_Elapsed(object sender, ElapsedEventArgs e)
         {
             disponibile = true;
             attesa.Stop();
-        }
-
-        public override void GetInstace(int x, int y)
-        {
-            new Supersparasemi(x, y);
         }
 
         public override Supersparasemi GetInstace()
@@ -142,7 +128,6 @@ namespace Plants_Vs_Zombies
         public override void Stop()
         {
             Seme_On.Stop();
-            Seme_On_2.Stop();
         }
     }
 }

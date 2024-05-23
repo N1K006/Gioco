@@ -100,7 +100,7 @@ namespace Plants_Vs_Zombies
         public bool perso = false;
         public int yLista = 8;
         public int x, y;
-        public int contatore = 5, n_soli = 5000;
+        public int contatore = 5, n_soli = 50;
         public bool home = false, muto = false, esci = false;
 
         #region Zombie
