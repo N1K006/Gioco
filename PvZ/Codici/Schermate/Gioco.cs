@@ -230,6 +230,8 @@ namespace Plants_Vs_Zombies
                     Vel_Zombie.Start();
                     Diff.Start();
 
+                    Finestra.MouseButtonPressed -= Pausa.MouseClick;
+
                     Finestra.MouseButtonPressed += MouseClick;
                     Finestra.MouseMoved += MouseMoved;
                 }
@@ -244,6 +246,8 @@ namespace Plants_Vs_Zombies
                     Diff.Stop();
 
                     Finale.Fine();
+
+                    Finestra.MouseButtonPressed -= Finale.MouseClick;
 
                     Zombie_On.Start();
                     Sun_On_Map.Start();

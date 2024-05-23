@@ -66,8 +66,8 @@ namespace Plants_Vs_Zombies
 
         public Supersparasemi()
         {
-            costo_soli = 100;
-            costo_monete = 0;
+            costo_soli = 200;
+            costo_monete = 300;
         }
 
         public bool Spara()
