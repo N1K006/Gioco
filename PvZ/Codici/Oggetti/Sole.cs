@@ -8,7 +8,7 @@ using SFML.System;
 using SFML.Window;
 using System.Timers;
 
-namespace Plants_Vs_Zombies.Codici.Oggetti
+namespace Plants_Vs_Zombies
 {
     class Sole
     {

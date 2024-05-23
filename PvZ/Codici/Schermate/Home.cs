@@ -36,6 +36,7 @@ namespace Plants_Vs_Zombies
         static Text seleziona_piante;
         public static Font font = new Font(@"..\..\..\Font\ComixLoud.ttf");
 
+        public static bool ricomincia = false;
         public static int schermata = 0; //0 = principale, 1 = shop, 2 = piante
 
         public static Pianta[] piante;
@@ -51,6 +52,13 @@ namespace Plants_Vs_Zombies
             Finestra.MouseButtonPressed += MouseClick;
             while (Finestra.IsOpen && Program.fase == 0)
             {
+                if (ricomincia)
+                {
+                    Program.fase = 1;
+                    ricomincia = false;
+                    continue;
+                }
+
                 if (SUONO_HOME.Status == SoundStatus.Stopped)
                     SUONO_HOME.Play();
 

@@ -1,4 +1,3 @@
-using Plants_Vs_Zombies.Codici.Oggetti;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -23,6 +22,7 @@ namespace Plants_Vs_Zombies
         public object LockBoom = new object();
 
         public bool ricomincia = false;
+        public int fase;
 
         #region Costruttore
         static object Lock = new object();
@@ -39,6 +39,8 @@ namespace Plants_Vs_Zombies
             Moneta.gioco = instance;
 
             Lista_piante = piante;
+
+            fase = 0;
             gioco();
         }
 
@@ -87,7 +89,7 @@ namespace Plants_Vs_Zombies
 
         #region Suoni
         static SoundBuffer suono_gioco = new SoundBuffer(@"..\..\..\Suoni\Gioco.wav");
-        static Sound SUONO_GIOCO = new Sound(suono_gioco);
+        public static Sound SUONO_GIOCO = new Sound(suono_gioco);
         #endregion
 
         public Pianta[] Lista_piante;
@@ -173,6 +175,12 @@ namespace Plants_Vs_Zombies
 
         public void gioco()
         {
+            Finale.Finestra = Finestra;
+            Finale.gioco = this;
+
+            Pausa.Finestra = Finestra;
+            Pausa.gioco = this;
+
             for (int i = 0; i < 5; i++)
                 Mappa_zombie[i] = new List<Zombie>();
 
@@ -199,24 +207,58 @@ namespace Plants_Vs_Zombies
 
             while (Finestra.IsOpen && Program.fase == 1)
             {
-                if (ricomincia || esci)
-                    break;
+                //if (ricomincia || esci)
+                //    break;
 
                 if (SUONO_GIOCO.Status == SoundStatus.Stopped)
                     SUONO_GIOCO.Play();
+
+                if (fase == 1)
+                {
+                    Finestra.MouseButtonPressed -= MouseClick;
+                    Finestra.MouseMoved -= MouseMoved;
+
+                    Zombie_On.Stop();
+                    Sun_On_Map.Stop();
+                    Vel_Zombie.Stop();
+                    Diff.Stop();
+
+                    Pausa.pausa();
+
+                    Zombie_On.Start();
+                    Sun_On_Map.Start();
+                    Vel_Zombie.Start();
+                    Diff.Start();
+
+                    Finestra.MouseButtonPressed += MouseClick;
+                    Finestra.MouseMoved += MouseMoved;
+                }
+                if (fase == 2)
+                {
+                    Finestra.MouseButtonPressed -= MouseClick;
+                    Finestra.MouseMoved-= MouseMoved;
+
+                    Zombie_On.Stop();
+                    Sun_On_Map.Stop();
+                    Vel_Zombie.Stop();
+                    Diff.Stop();
+
+                    Finale.Fine();
+
+                    Zombie_On.Start();
+                    Sun_On_Map.Start();
+                    Vel_Zombie.Start();
+                    Diff.Start();
+
+                    Finestra.MouseButtonPressed += MouseClick;
+                    Finestra.MouseMoved += MouseMoved;
+                }
 
                 Finestra.Clear();
                 Disegna();
                 Finestra.DispatchEvents();
                 Finestra.Display();
             }
-            if (ricomincia && !esci)
-            {
-                ricomincia = false;
-                Program.fase = 1;
-            }
-            else if (esci && !ricomincia)
-                Program.fase = 0;
             Reset();
         }
 
@@ -276,6 +318,7 @@ namespace Plants_Vs_Zombies
                 n_soli = 50;
                 home = false;
                 muto = false;
+                fase = 0;
                 instance = null;
             }
 
@@ -302,19 +345,16 @@ namespace Plants_Vs_Zombies
             bool s = false;
             bool m = false;
 
-            if (!home && !perso)
+            lock (LockSoli)
             {
-                lock (LockSoli)
-                {
-                    s = ClickSole();
-                }
-                lock (LockMonete)
-                {
-                    m = ClickMoneta();
-                    if (m)
-                        using (BinaryWriter wa = new BinaryWriter(File.Open(@"..\..\..\Salvataggio\Altro.txt", FileMode.Create), Encoding.UTF8, false))
-                            wa.Write((Int32)Program.monete);
-                }
+                s = ClickSole();
+            }
+            lock (LockMonete)
+            {
+                m = ClickMoneta();
+                if (m)
+                    using (BinaryWriter wa = new BinaryWriter(File.Open(@"..\..\..\Salvataggio\Altro.txt", FileMode.Create), Encoding.UTF8, false))
+                        wa.Write((Int32)Program.monete);
             }
 
             if (x > 24 && x < 140 && !home && !perso && !(s || m)) //lista selezionata
@@ -357,62 +397,11 @@ namespace Plants_Vs_Zombies
             else if (x >= 976 && x <= 1030 && y >= 16 && y <= 70 && !perso) // Tasto Pausa
             {
                 Paletta.presa = false;
-                home = true;
+                Paletta.pos();
                 yLista = 8;
-            }
-            else if (x >= 437 && x <= 605 && y >= 175 && y <= 223 && home && !perso) // Tasto riprendi
-            {
-                home = false;
-                Paletta.presa = false;
-                yLista = 8;
-            }
-            else if (x >= 437 && x <= 605 && y >= 385 && y <= 435 && home && !perso && !(s || m)) // Tasto Home
-            {
-                Home.schermata = 0;
-                Program.fase = 0;
-                home = false;
-                Paletta.presa = false;
-                yLista = 8;
-                Reset();
-            }
-            else if (x >= 437 && x <= 606 && y >= 315 && y <= 363 && home && !perso) // Tasto Muta
-            {
-                Paletta.presa = false;
-                home = true;
-                muto = !muto;
-                yLista = 8;
-
-                if (muto)
-                    SUONO_GIOCO.Volume = 0;
-                else
-                    SUONO_GIOCO.Volume = 100;
-            }
-            else if (x >= 437 && x <= 606 && y >= 245 && y <= 295 && home && !perso) // Tasto Ricomincia
-            {
-                Paletta.presa = false;
-                home = false;
-                yLista = 8;
-                ricomincia = true;
-                Reset();
-            }
-            else if (x >= 460 && x <= 709 && y >= 316 && y <= 408 && perso) // Tasto Home quando hai perso
-            {
-                Home.schermata = 0;
-                Program.fase = 0;
-                home = false;
-                perso = false;
-                Paletta.presa = false;
-                yLista = 8;
-                Reset();
-            }
-            else if (x >= 460 && x <= 709 && y >= 420 && y <= 515 && perso) // Tasto Ricomincia quando hai perso
-            {
-                Paletta.presa = false;
-                home = false;
-                perso = false;
-                yLista = 8;
-                ricomincia = true;
-                Reset();
+                fase = 1;
+                Finestra.MouseButtonPressed -= MouseClick;
+                Finestra.MouseMoved -= MouseMoved;
             }
             else // altro
             {
@@ -489,6 +478,10 @@ namespace Plants_Vs_Zombies
                 mappa.Scale = new Vector2f(0.25f, 0.25f);
                 Finestra.Draw(mappa);
             }
+            T_H.Origin = new Vector2f(T_H.Texture.Size.X / 2, T_H.Texture.Size.X / 2);
+            T_H.Scale = new Vector2f(0.07f, 0.07f);
+            T_H.Position = new Vector2f(1005, 45);
+            Finestra.Draw(T_H);
             // Immagine conta soli
             {
                 C_S.Origin = new Vector2f(50, 50);
@@ -594,115 +587,6 @@ namespace Plants_Vs_Zombies
                                 Finestra.Draw(Boom.esplosioni[i].BOOM);
                 }
             }
-            //Abbandona
-            {
-                T_H.Origin = new Vector2f(T_H.Texture.Size.X / 2, T_H.Texture.Size.X / 2);
-                T_H.Scale = new Vector2f(0.07f, 0.07f);
-                T_H.Position = new Vector2f(1005, 45);
-                Finestra.Draw(T_H);
-
-                if (home)
-                {
-                    // PAUSA
-                    {
-                        RectangleShape rect = new RectangleShape(new Vector2f(220, 300))
-                        {
-                            FillColor = new Color(100, 100, 100, 220),
-                            Position = new Vector2f(Finestra.Size.X / 2, Finestra.Size.Y / 2)
-                        };
-                        rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        Finestra.Draw(rect);
-                    }
-                    // Tasto Riprendi
-                    {
-                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
-                        {
-                            FillColor = new Color(30, 30, 30, 220),
-                            Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) - 100)
-                        };
-                        rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        Finestra.Draw(rect);
-
-                        Text home = new Text("RIPRENDI", Home.font, 15)
-                        {
-                            FillColor = Color.White,
-                            Origin = new Vector2f(0, 0),
-                            Position = new Vector2f((Finestra.Size.X / 2) - 60, (Finestra.Size.Y / 2) - 105)
-                        };
-                        Finestra.Draw(home);
-                    }
-                    // Tasto Ricomincia
-                    {
-                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
-                        {
-                            FillColor = new Color(30, 30, 30, 220),
-                            Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) - 30)
-                        };
-                        rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        Finestra.Draw(rect);
-
-                        Text home = new Text("RICOMINCIA", Home.font, 15)
-                        {
-                            FillColor = Color.White,
-                            Origin = new Vector2f(0, 0),
-                            Position = new Vector2f((Finestra.Size.X / 2) - 74, (Finestra.Size.Y / 2) - 38)
-                        };
-                        Finestra.Draw(home);
-                    }
-                    // Tasto Muta
-                    {
-                        {
-                            RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
-                            {
-                                FillColor = new Color(30, 30, 30, 220),
-                                Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 40)
-                            };
-                            rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                            Finestra.Draw(rect);
-                        }
-                        // Quadratino per muto
-                        {
-                            RectangleShape rect = new RectangleShape(new Vector2f(20, 20))
-                            {
-                                Position = new Vector2f((Finestra.Size.X / 2) + 62, (Finestra.Size.Y / 2) + 40)
-                            };
-                            rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-
-                            if (muto)
-                                rect.FillColor = Color.Red;
-                            else
-                                rect.FillColor = Color.Green;
-                            Finestra.Draw(rect);
-                        }
-
-                        Text home = new Text("MUTO", Home.font, 15)
-                        {
-                            FillColor = Color.White,
-                            Origin = new Vector2f(0, 0),
-                            Position = new Vector2f((Finestra.Size.X / 2) - 70, (Finestra.Size.Y / 2) + 32)
-                        };
-                        Finestra.Draw(home);
-                    }
-                    // Tasto Home
-                    {
-                        RectangleShape rect = new RectangleShape(new Vector2f(170, 50))
-                        {
-                            FillColor = new Color(30, 30, 30, 220),
-                            Position = new Vector2f(Finestra.Size.X / 2, (Finestra.Size.Y / 2) + 110)
-                        };
-                        rect.Origin = new Vector2f(rect.Size.X / 2, rect.Size.Y / 2);
-                        Finestra.Draw(rect);
-
-                        Text home = new Text("HOME", Home.font, 15)
-                        {
-                            FillColor = Color.White,
-                            Origin = new Vector2f(0, 0),
-                            Position = new Vector2f((Finestra.Size.X / 2) - 35, (Finestra.Size.Y / 2) + 105)
-                        };
-                        Finestra.Draw(home);
-                    }
-                }
-            }
             //Paletta
             {
                 Cerchio_Paletta.Position = new Vector2f(351, 37);
@@ -712,47 +596,6 @@ namespace Plants_Vs_Zombies
                 Finestra.Draw(Paletta.sprite); //Paletta
             }
 
-            // Scritta Hai perso
-            if (perso)
-            {
-                Text perso = new Text("HAI PERSO", Home.font, 50)
-                {
-                    FillColor = Color.White,
-                    Origin = new Vector2f(0, 0),
-                    Position = new Vector2f((Finestra.Size.X / 2) - 140, (Finestra.Size.Y / 2) - 90)
-                };
-                Finestra.Draw(perso);
-
-                RectangleShape rect1 = new RectangleShape(new Vector2f(250, 200))
-                {
-                    FillColor = new Color(30, 30, 30, 220),
-                    Position = new Vector2f(460, 317)
-                };
-                Finestra.Draw(rect1);
-
-                RectangleShape rect2 = new RectangleShape(new Vector2f(250, 10))
-                {
-                    FillColor = new Color(100, 100, 100, 220),
-                    Position = new Vector2f(460, 410)
-                };
-                Finestra.Draw(rect2);
-
-                Text home = new Text("HOME", Home.font, 20)
-                {
-                    FillColor = Color.White,
-                    Origin = new Vector2f(0, 0),
-                    Position = new Vector2f(532, 360)
-                };
-                Finestra.Draw(home);
-
-                Text ricomincia = new Text("RICOMINCIA", Home.font, 20)
-                {
-                    FillColor = Color.White,
-                    Origin = new Vector2f(0, 0),
-                    Position = new Vector2f(488, 455)
-                };
-                Finestra.Draw(ricomincia);
-            }
         }
     }
 }

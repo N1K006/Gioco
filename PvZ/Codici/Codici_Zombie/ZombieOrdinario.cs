@@ -2,7 +2,6 @@
 using SFML.Graphics;
 using SFML.System;
 using System.Timers;
-using Plants_Vs_Zombies.Codici.Oggetti;
 
 namespace Plants_Vs_Zombies
 {
@@ -89,21 +88,21 @@ namespace Plants_Vs_Zombies
 
         private void Mov_Zombie_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (sprite.Position.X >= 20)
+            if (sprite.Position.X >= 20 && !Mangia())
             {
                 lock (LockVel)
                 {
                     sprite.Position -= new Vector2f(rallentamenti.Count > 0 ? Vel / 100 * (100 - RallMax()) : Vel, 0);
                 }
             }
-            else
+            else if(sprite.Position.X < 20)
             {
                 lock (gioco.LockZombie)
                 {
                     gioco.Mappa_zombie[fila].Remove(this);
                 }
                 ((Timer)sender).Stop();
-                gioco.perso = true;
+                gioco.fase = 1;
                 gioco.Reset();
             }
             int RallMax()
@@ -122,15 +121,9 @@ namespace Plants_Vs_Zombies
         private void mangia_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (Mangia())
-            {
-                Mov_Zombie.Stop();
                 lock (p.LockVita)
-                {
-                    if(p.Vita - danno <= 0)
-                        Mov_Zombie.Enabled = true;
                     p.Vita -= danno;
-                }
-            }
+            p = null;
         }
         private bool Mangia()
         {
