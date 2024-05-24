@@ -72,12 +72,17 @@ namespace Plants_Vs_Zombies
         {
             lock (gioco.LockZombie)
                 for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
-                    if (gioco.Mappa_zombie[Y][i].sprite.Position.X <= pianta.Position.X + 308 * pianta.Scale.X && gioco.Mappa_zombie[Y][i].sprite.Position.X + 422 * gioco.Mappa_zombie[Y][i].sprite.Scale.X >= pianta.Position.X)
-                        lock (gioco.Mappa_zombie[Y][i].LockVita)
+                {
+                    Zombie z = gioco.Mappa_zombie[Y][i];
+                    if (z.sprite.Position.X <= pianta.Position.X + 308 * pianta.Scale.X && z.sprite.Position.X + 422 * z.sprite.Scale.X >= pianta.Position.X)
+                        lock (z.LockVita)
                         {
-                            gioco.Mappa_zombie[Y][i].Vita -= danno;
-                            gioco.Mappa_zombie[Y][i].rallentamenti.Add(new Rallentamento(25, 1000, gioco.Mappa_zombie[Y][i]));
+                            lock (z.LockVita)
+                                z.Vita -= danno;
+                            lock (z.LockVel)
+                                z.rallentamenti.Add(new Rallentamento(25, 1000, z));
                         }
+                }
         }
 
         public override void GetInstace(int x, int y)
