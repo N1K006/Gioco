@@ -18,7 +18,7 @@ namespace Plants_Vs_Zombies
         public static readonly Sprite L_RO = new Sprite(L_ro);
 
         public static bool disponibile = true;
-        public int danno = 4;
+        public int danno = 0;
         private readonly int X, Y;
         private Timer Attack_On = new Timer(900);
 
@@ -74,13 +74,13 @@ namespace Plants_Vs_Zombies
                 for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
                 {
                     Zombie z = gioco.Mappa_zombie[Y][i];
-                    if (z.sprite.Position.X <= pianta.Position.X + 308 * pianta.Scale.X && z.sprite.Position.X + 422 * z.sprite.Scale.X >= pianta.Position.X)
+                    if (z.sprite.Position.X <= pianta.Position.X + pianta.Texture.Size.X * pianta.Scale.X + 30 && z.sprite.Position.X >= pianta.Position.X + 10)
                         lock (z.LockVita)
                         {
                             lock (z.LockVita)
                                 z.Vita -= danno;
                             lock (z.LockVel)
-                                z.rallentamenti.Add(new Rallentamento(25, 1000, z));
+                                z.rallentamenti.Add(new Rallentamento(50, 1000, z));
                         }
                 }
         }

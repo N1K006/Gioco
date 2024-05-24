@@ -100,7 +100,7 @@ namespace Plants_Vs_Zombies
         public bool perso = false;
         public int yLista = 8;
         public int x, y;
-        public int contatore = 5, n_soli = 50;
+        public int contatore = 5, n_soli = 500;
         public bool home = false, muto = false, esci = false;
 
         #region Zombie
@@ -357,8 +357,9 @@ namespace Plants_Vs_Zombies
             {
                 m = ClickMoneta();
                 if (m)
-                    using (BinaryWriter wa = new BinaryWriter(File.Open(@"..\..\..\Salvataggio\Altro.txt", FileMode.Create), Encoding.UTF8, false))
-                        wa.Write((Int32)Program.monete);
+                    lock (Salvataggio.Lock)
+                        using (BinaryWriter wa = new BinaryWriter(File.Open(@"..\..\..\Salvataggio\Altro.txt", FileMode.Create), Encoding.UTF8, false))
+                            wa.Write((Int32)Program.monete);
             }
 
             if (x > 24 && x < 140 && !home && !perso && !(s || m)) //lista selezionata
