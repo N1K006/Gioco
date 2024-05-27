@@ -120,7 +120,6 @@ namespace Plants_Vs_Zombies
         {
             Sun_On.Stop();
         }
-
         public override void Start()
         {
             Sun_On.Start();

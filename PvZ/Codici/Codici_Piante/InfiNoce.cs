@@ -115,7 +115,6 @@ namespace Plants_Vs_Zombies
         {
             Recupero_vita.Stop();
         }
-
         public override void Start()
         {
             Recupero_vita.Start();

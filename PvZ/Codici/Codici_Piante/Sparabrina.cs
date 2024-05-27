@@ -75,20 +75,11 @@ namespace Plants_Vs_Zombies
         {
             bool spara = false;
             lock (gioco.LockZombie)
-            {
-                for (int i = 0; i < 11 && !spara; i++)
-                {
+                for (int i = 0; i < 11; i++)
                     foreach (Zombie z in gioco.Mappa_zombie[i, Y])
-                    {
                         if (z != null)
                             if (z.sprite.Position.X >= pianta.Position.X)
-                            {
                                 spara = true;
-                                break;
-                            }
-                    }
-                }
-            }
             return spara;
         }
 

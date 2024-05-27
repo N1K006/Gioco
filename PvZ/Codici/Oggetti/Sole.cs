@@ -96,7 +96,8 @@ namespace Plants_Vs_Zombies
             if (preso)
             {
                 if (sole.Position.Y - Gioco.C_S.Position.Y < 8 && sole.Position.X - Gioco.C_S.Position.X < 8)
-                    soliPresi.Remove(this);
+                    lock (gioco.LockSoli)
+                        soliPresi.Remove(this);
                 float x = sole.Position.X - Gioco.C_S.Position.X;
                 float y = sole.Position.Y - Gioco.C_S.Position.Y;
                 mov = new Vector2f(x / Convert.ToSingle(Math.Sqrt(x * x + y * y)), y / Convert.ToSingle(Math.Sqrt(x * x + y * y)));
@@ -125,19 +126,15 @@ namespace Plants_Vs_Zombies
         {
             preso = true;
             gioco.n_soli += value_sun;
-            lock (gioco.LockSoli)
-            {
-                soli.Remove(this);
-                soliPresi.Add(this);
-            }
+            soli.Remove(this);
+            soliPresi.Add(this);
         }
 
         public void Stop()
         {
             Sun_Off.Stop();
             Mov_Sun.Stop();
-            lock (gioco.LockSoli)
-                soli.Remove(this);
+            soli.Remove(this);
         }
     }
 }

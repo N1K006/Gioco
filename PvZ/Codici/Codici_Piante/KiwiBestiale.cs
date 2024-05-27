@@ -124,125 +124,85 @@ namespace Plants_Vs_Zombies
         {
             return new KiwiBestiale();
         }
+        public override void Stop() { }
         void Attack_On_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (Y > 1 && fase == 3) // due file sopra
-            {
                 lock (gioco.LockZombie)
                 {
                     if (X > 0)
-                        foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y - 2])
-                            z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X, Y - 2])
-                        z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y - 2])
-                        z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y - 2])
-                        z.Vita -= danno * fase;
-
+                        Danneggia(gioco.Mappa_zombie[X - 1, Y - 2]);
                     if (X < 8)
-                        foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y - 2])
-                            z.Vita -= danno * fase;
+                        Danneggia(gioco.Mappa_zombie[X + 3, Y - 2]);
+                    Danneggia(gioco.Mappa_zombie[X, Y - 2]);
+                    Danneggia(gioco.Mappa_zombie[X + 2, Y - 2]);
+                    Danneggia(gioco.Mappa_zombie[X + 1, Y - 2]);
                 }
-            }
 
             if (Y > 0 && fase > 1) // fila sopra
-            {
                 lock (gioco.LockZombie)
                 {
-                    if (fase == 3 && X > 0)
-                        foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y - 1])
-                            z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X, Y - 1])
-                        z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y - 1])
-                        z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y - 1])
-                        z.Vita -= danno * fase;
-
-                    if (fase == 3 && X < 8)
-                        foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y - 1])
-                            z.Vita -= danno * fase;
+                    if (fase == 3)
+                    {
+                        if (X > 0)
+                            Danneggia(gioco.Mappa_zombie[X - 1, Y - 1]);
+                        if (X < 8)
+                            Danneggia(gioco.Mappa_zombie[X + 3, Y - 1]);
+                    }
+                    Danneggia(gioco.Mappa_zombie[X, Y - 1]);
+                    Danneggia(gioco.Mappa_zombie[X + 2, Y - 1]);
+                    Danneggia(gioco.Mappa_zombie[X + 1, Y - 1]);
                 }
-            }
 
             lock (gioco.LockZombie)
             {
-                if (fase == 3 && X > 0)
-                    foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y])
-                        z.Vita -= danno * fase;
-
+                if (fase == 3)
+                {
+                    if (X > 0)
+                        Danneggia(gioco.Mappa_zombie[X - 1, Y]);
+                    if (X < 8)
+                        Danneggia(gioco.Mappa_zombie[X + 3, Y]);
+                }
                 if (fase > 1)
-                    foreach (Zombie z in gioco.Mappa_zombie[X, Y])
-                        z.Vita -= danno * fase;
-
-                foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y])
-                    z.Vita -= danno * fase;
-
-                if (fase > 1)
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y])
-                        z.Vita -= danno * fase;
-
-                if (fase == 3 && X < 8)
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y])
-                        z.Vita -= danno * fase;
+                {
+                    Danneggia(gioco.Mappa_zombie[X, Y]);
+                    Danneggia(gioco.Mappa_zombie[X + 2, Y]);
+                }
+                Danneggia(gioco.Mappa_zombie[X + 1, Y]);
             }
 
             if (Y < 4 && fase > 1) // fila sotto
-            {
                 lock (gioco.LockZombie)
                 {
-                    if (fase == 3 && X > 0)
-                        foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y + 1])
-                            z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X, Y + 1])
-                        z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y + 1])
-                        z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y + 1])
-                        z.Vita -= danno * fase;
-
-                    if (fase == 3 && X < 8)
-                        foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y + 1])
-                            z.Vita -= danno * fase;
+                    if (fase == 3)
+                    {
+                        if (X > 0)
+                            Danneggia(gioco.Mappa_zombie[X - 1, Y + 1]);
+                        if (X < 8)
+                            Danneggia(gioco.Mappa_zombie[X + 3, Y + 1]);
+                    }
+                    Danneggia(gioco.Mappa_zombie[X, Y + 1]);
+                    Danneggia(gioco.Mappa_zombie[X + 2, Y + 1]);
+                    Danneggia(gioco.Mappa_zombie[X + 1, Y + 1]);
                 }
-            }
 
             if (Y < 3 && fase == 3) // 2 file sotto
-            {
                 lock (gioco.LockZombie)
                 {
                     if (X > 0)
-                        foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y + 2])
-                            z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X, Y + 2])
-                        z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y + 2])
-                        z.Vita -= danno * fase;
-
-                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y + 2])
-                        z.Vita -= danno * fase;
-
+                        Danneggia(gioco.Mappa_zombie[X - 1, Y + 2]);
                     if (X < 8)
-                        foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y + 2])
-                            z.Vita -= danno * fase;
+                        Danneggia(gioco.Mappa_zombie[X + 3, Y + 2]);
+                    Danneggia(gioco.Mappa_zombie[X, Y + 2]);
+                    Danneggia(gioco.Mappa_zombie[X + 2, Y + 2]);
+                    Danneggia(gioco.Mappa_zombie[X + 1, Y + 2]);
                 }
+
+            void Danneggia(List<Zombie> l)
+            {
+                foreach(Zombie z in l)
+                    z.Vita -= danno * fase;
             }
-        }
-        public override void Stop()
-        {
-            Attack_On.Stop();
         }
         public override void Start()
         {

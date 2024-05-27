@@ -73,41 +73,29 @@ namespace Plants_Vs_Zombies
         public bool Spara()
         {
             bool spara = false;
-            lock (gioco.LockZombie)
-            {
-                for (int i = 0; i < 11 && !spara; i++)
-                {
-                    if (Y > 0)
+
+            if (Y > 0)
+                lock (gioco.LockZombie)
+                    for (int i = 0; i < 11; i++)
                         foreach (Zombie z in gioco.Mappa_zombie[i, Y - 1])
-                        {
                             if (z != null)
                                 if (z.sprite.Position.X >= pianta.Position.X)
-                                {
                                     spara = true;
-                                    break;
-                                }
-                        }
+
+            lock (gioco.LockZombie)
+                for (int i = 0; i < 11; i++)
                     foreach (Zombie z in gioco.Mappa_zombie[i, Y])
-                    {
                         if (z != null)
                             if (z.sprite.Position.X >= pianta.Position.X)
-                            {
                                 spara = true;
-                                break;
-                            }
-                    }
-                    if (Y < 4)
+
+            if (Y < 4)
+                lock (gioco.LockZombie)
+                    for (int i = 0; i < 11; i++)
                         foreach (Zombie z in gioco.Mappa_zombie[i, Y + 1])
-                        {
                             if (z != null)
                                 if (z.sprite.Position.X >= pianta.Position.X)
-                                {
                                     spara = true;
-                                    break;
-                                }
-                        }
-                }
-            }
             return spara;
         }
 

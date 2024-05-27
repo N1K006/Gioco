@@ -73,13 +73,10 @@ namespace Plants_Vs_Zombies
             lock (gioco.LockZombie)
                 foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y])
                 {
-                    lock (z.LockVita)
-                    {
                         lock (z.LockVita)
                             z.Vita -= danno;
                         lock (z.LockVel)
                             z.rallentamenti.Add(new Rallentamento(50, 1000, z));
-                    }
                 }
         }
 

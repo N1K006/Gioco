@@ -63,37 +63,6 @@ namespace Plants_Vs_Zombies
             }
         }
 
-        Zombie ZombieColpito()
-        {
-            Zombie Z = null;
-
-            if (Program.fase != 0)
-                lock (gioco.LockZombie)
-                    if (fila != 5)
-                        for (int i = 0; i < 11; i++)
-                            foreach (Zombie z in gioco.Mappa_zombie[i, fila])
-                                if (Z == null && Tocca(z))
-                                    Z = z;
-                                else if (Z != null)
-                                    if (Z.sprite.Position.X > z.sprite.Position.X && Tocca(z))
-                                            if (z != null)
-                                                Z = z;
-            return Z;
-
-            bool Tocca(Zombie z)
-            {
-                try
-                {
-                    if (z != null && z.sprite.Texture != null)
-                        if (circle.Position.X - 5 < z.sprite.Position.X + (z.sprite.Texture.Size.X * Math.Abs(z.sprite.Scale.X) - 59) &&
-                        circle.Position.X + 5 > z.sprite.Position.X - 50)
-                            return true;
-                }
-                catch (Exception) { }
-                return false;
-            }
-        }
-
         public override void Stop()
         {
             Mov_Seme.Stop();

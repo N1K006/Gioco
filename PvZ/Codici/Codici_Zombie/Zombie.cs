@@ -15,6 +15,22 @@ namespace Plants_Vs_Zombies
         public static Texture texture;
         public Sprite sprite = new Sprite();
 
+        int x;
+        public int X
+        {
+            get => x;
+            set
+            {
+                if (value != x) 
+                {
+                    lock (gioco.LockZombie)
+                    {
+                        gioco.Mappa_zombie[x, fila].Remove(this);
+                        gioco.Mappa_zombie[value, fila].Add(this);
+                    }
+                }
+            }
+        }
         public int fila;
         protected readonly float Vel = 30;
         public List<Rallentamento> rallentamenti = new List<Rallentamento>();
@@ -22,25 +38,6 @@ namespace Plants_Vs_Zombies
         protected int vita;
         public int danno;
 
-        int x;
-        public int X
-        {
-            get => x;
-            set
-            {
-                if (value != x)
-                {
-                    if (value > 10)
-                        value = 10;
-                    lock (gioco.LockZombie)
-                    {
-                        gioco.Mappa_zombie[x, fila].Remove(this);
-                        gioco.Mappa_zombie[value, fila].Add(this);
-                    }
-                    x = value;
-                }
-            }
-        }
         virtual public int Vita 
         {
             get => vita;
@@ -50,9 +47,6 @@ namespace Plants_Vs_Zombies
                 {
                     lock (gioco.LockZombie)
                         gioco.Mappa_zombie[X, fila].Remove(this);
-                    for (int i = 0; i < 20; i++)
-                        Logger.Write(X.ToString(), 6);
-                    Logger.WriteLine("", 6);
                     GC.Collect();
                 }
             }
@@ -61,18 +55,30 @@ namespace Plants_Vs_Zombies
         public Zombie(int y, float vel)
         {
             Vel = vel;
-
-            int Y = 80 + 100 * y;
-            sprite.Position = new Vector2f(1093, Y);
-
-            x = 10;
-            gioco.Mappa_zombie[10, fila].Add(this);
+            int Y;
+            switch (y)
+            {
+                case 0:
+                    Y = 80;
+                    break;
+                case 1:
+                    Y = 180;
+                    break;
+                case 2:
+                    Y = 280;
+                    break;
+                case 3:
+                    Y = 380;
+                    break;
+                default:
+                    Y = 480;
+                    break;
+            }
+            sprite.Position = new Vector2f(1045, Y);
         }
         public Zombie() { }
         abstract public float Probabilita { get; set; }
         abstract public Zombie GetInstance();
         abstract public Zombie GetInstance(int y);
-        abstract public void Stop();
-        abstract public void Start();
     }
 }

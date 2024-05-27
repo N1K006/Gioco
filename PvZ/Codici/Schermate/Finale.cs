@@ -44,8 +44,6 @@ namespace Plants_Vs_Zombies
         #endregion
         public static void Fine()
         {
-            Stop();
-
             Finestra.MouseButtonPressed += MouseClick;
 
             while (Finestra.IsOpen && gioco.fase == 2)
@@ -177,32 +175,6 @@ namespace Plants_Vs_Zombies
                 Home.ricomincia = true;
                 Program.fase = 0;
                 gioco.fase = 0;
-            }
-        }
-        static void Stop()
-        {
-            gioco.Vel_Zombie.Stop();
-            gioco.Sun_On_Map.Stop();
-            gioco.Zombie_On.Stop();
-            gioco.Diff.Stop();
-
-            foreach (Pianta p in gioco.Lista_piante)
-                if (p != null)
-                    p.Stop();
-
-            lock (gioco.LockZombie)
-                foreach (List<Zombie> l in gioco.Mappa_zombie)
-                    foreach (Zombie z in l)
-                        z.Stop();
-
-            lock (gioco.LockSoli)
-            {
-
-            }
-
-            lock (gioco.LockMonete)
-            {
-
             }
         }
     }

@@ -20,7 +20,7 @@ namespace Plants_Vs_Zombies
         public override int Vita
         {
             get => 1;
-            set 
+            set
             {
                 if (value == -999)
                 {
@@ -104,17 +104,18 @@ namespace Plants_Vs_Zombies
             }
 
             if (Y < 4) // fila sotto
-            {
-                while (gioco.Mappa_zombie[X, Y + 1].Count > 0)
-                    gioco.Mappa_zombie[X, Y + 1][0].Vita = -999;
-                while (gioco.Mappa_zombie[X + 1, Y + 1].Count > 0)
-                    gioco.Mappa_zombie[X + 1, Y + 1][0].Vita = -999;
-                while (gioco.Mappa_zombie[X + 2, Y + 1].Count > 0)
-                    gioco.Mappa_zombie[X + 2, Y + 1][0].Vita = -999;
-            }
+                lock (gioco.LockZombie)
+                {
+                    while (gioco.Mappa_zombie[X, Y + 1].Count > 0)
+                        gioco.Mappa_zombie[X, Y + 1][0].Vita = -999;
+                    while (gioco.Mappa_zombie[X + 1, Y + 1].Count > 0)
+                        gioco.Mappa_zombie[X + 1, Y + 1][0].Vita = -999;
+                    while (gioco.Mappa_zombie[X + 2, Y + 1].Count > 0)
+                        gioco.Mappa_zombie[X + 2, Y + 1][0].Vita = -999;
+                }
 
             new Boom(pianta.Position);
-            Vita = 0;
+            Vita = -999;
         }
 
         public override CiliegeEsplosive GetInstace()
