@@ -98,5 +98,6 @@ namespace Plants_Vs_Zombies
             set => disponibile = value;
         }
         public override void Stop() { }
+        public override void Start() { }
     }
 }

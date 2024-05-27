@@ -2,11 +2,7 @@
 using SFML.System;
 using SFML.Window;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Plants_Vs_Zombies
 {
@@ -44,13 +40,69 @@ namespace Plants_Vs_Zombies
         #endregion
         public static void pausa()
         {
-            Finestra.MouseButtonPressed += MouseClick; 
+            Stop();
+
+            Finestra.MouseButtonPressed += MouseClick;
 
             while (Finestra.IsOpen && gioco.fase == 1)
             {
                 Disegna();
                 Finestra.DispatchEvents();
                 Finestra.Display();
+            }
+
+            Start();
+        }
+        static void Stop()
+        {
+            gioco.Vel_Zombie.Stop();
+            gioco.Sun_On_Map.Stop();
+            gioco.Zombie_On.Stop();
+            gioco.Diff.Stop();
+
+            foreach (Pianta p in gioco.Lista_piante)
+                if (p != null)
+                    p.Stop();
+
+            lock (gioco.LockZombie)
+                foreach (List<Zombie> l in gioco.Mappa_zombie)
+                    foreach (Zombie z in l)
+                        z.Stop();
+
+            lock (gioco.LockSoli)
+            {
+
+            }
+
+            lock (gioco.LockMonete)
+            {
+
+            }
+        }
+        static void Start()
+        {
+            gioco.Vel_Zombie.Start();
+            gioco.Sun_On_Map.Start();
+            gioco.Zombie_On.Start();
+            gioco.Diff.Start();
+
+            foreach (Pianta p in gioco.Lista_piante)
+                if (p != null)
+                    p.Start();
+
+            lock (gioco.LockZombie)
+                foreach (List<Zombie> l in gioco.Mappa_zombie)
+                    foreach (Zombie z in l)
+                        z.Start();
+
+            lock (gioco.LockSoli)
+            {
+
+            }
+
+            lock (gioco.LockMonete)
+            {
+
             }
         }
         public static void MouseClick(object sender, MouseButtonEventArgs e)

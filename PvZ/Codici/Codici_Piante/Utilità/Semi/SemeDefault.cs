@@ -57,36 +57,20 @@ namespace Plants_Vs_Zombies
 
         Zombie ZombieColpito()
         {
-            Zombie z = null;
+            Zombie Z = null;
 
             if (Program.fase != 0)
-            {
                 lock (gioco.LockZombie)
-                {
                     if (fila != 5)
-                    {
-                        for (int i = 0; i < gioco.Mappa_zombie[fila].Count; i++)
-                            if (z == null && Tocca(gioco.Mappa_zombie[fila][i]))
-                                try
-                                {
-                                    if (gioco.Mappa_zombie[fila][i] != null)
-                                        z = gioco.Mappa_zombie[fila][i];
-                                }
-                                catch (Exception) { }
-                            else if (z != null)
-                                if (z.sprite.Position.X > gioco.Mappa_zombie[fila][i].sprite.Position.X && Tocca(gioco.Mappa_zombie[fila][i]))
-                                    try
-                                    {
-                                        if (gioco.Mappa_zombie[fila][i] != null)
-                                            z = gioco.Mappa_zombie[fila][i];
-                                    }
-                                    catch (Exception) { }
-                    }
-                }
-                
-                    
-            }
-            return z;
+                        for (int i = 0; i < 11; i++)
+                            foreach (Zombie z in gioco.Mappa_zombie[i, fila])
+                                if (Z == null && Tocca(z))
+                                    Z = z;
+                                else if (Z != null)
+                                    if (Z.sprite.Position.X > z.sprite.Position.X && Tocca(z))
+                                        if (z != null)
+                                            Z = z;
+            return Z;
 
             bool Tocca(Zombie z)
             {

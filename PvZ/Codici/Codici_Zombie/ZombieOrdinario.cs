@@ -29,7 +29,7 @@ namespace Plants_Vs_Zombies
             {
                 lock (gioco.LockZombie)
                 {
-                    gioco.Mappa_zombie[y].Add(this);
+                    gioco.Mappa_zombie[10, y].Add(this);
                 }
 
                 fila = y;
@@ -67,15 +67,14 @@ namespace Plants_Vs_Zombies
                     vita = value;
                     if (value <= 0)
                     {
-                        if (Program.fase != 0)
-                            lock (gioco.LockZombie)
+                        lock (gioco.LockMonete)
+                        {
+                            int val = new Random().Next(0, 6);
+                            if (val > 0)
                             {
-                                int val = new Random().Next(0, 6);
-                                if (val > 0)
-                                {
-                                    Moneta moneta = new Moneta(sprite.Position, val);
-                                }
+                                Moneta moneta = new Moneta(sprite.Position, val);
                             }
+                        }
                         mangia.Stop();
                         mangia.Close();
                         Mov_Zombie.Stop();
@@ -88,23 +87,22 @@ namespace Plants_Vs_Zombies
 
         private void Mov_Zombie_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (sprite.Position.X >= 20 && !Mangia())
+            lock (LockVel)
             {
-                lock (LockVel)
+                sprite.Position -= new Vector2f(rallentamenti.Count > 0 ? Vel / 100 * (100 - RallMax()) : Vel, 0);
+                X = (int)sprite.Position.X / 100;
+            }
+            lock (gioco.LockZombie)
+            {
+                if (sprite.Position.X >= 172)
+                    X = (int)((sprite.Position.X - 172) / 81.227);
+                else
                 {
-                    sprite.Position -= new Vector2f(rallentamenti.Count > 0 ? Vel / 100 * (100 - RallMax()) : Vel, 0);
+                    Mov_Zombie.Stop();
+                    gioco.fase = 2;
                 }
             }
-            else if(sprite.Position.X < 20)
-            {
-                lock (gioco.LockZombie)
-                {
-                    gioco.Mappa_zombie[fila].Remove(this);
-                }
-                ((Timer)sender).Stop();
-                gioco.fase = 1;
-                gioco.Reset();
-            }
+
             int RallMax()
             {
                 int r;
@@ -154,6 +152,16 @@ namespace Plants_Vs_Zombies
         public override ZombieOrdinario GetInstance(int y)
         {
             return new ZombieOrdinario(y);
+        }
+        public override void Stop()
+        {
+            mangia.Stop();
+            Mov_Zombie.Stop();
+        }
+        public override void Start()
+        {
+            mangia.Start();
+            Mov_Zombie.Start();
         }
     }
 }

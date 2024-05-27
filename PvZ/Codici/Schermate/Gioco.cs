@@ -95,7 +95,7 @@ namespace Plants_Vs_Zombies
         public Pianta[] Lista_piante;
         public Pianta[,] Mappa_piante = new Pianta[9, 5];
 
-        Timer Sun_On_Map = new Timer(4000);
+        public Timer Sun_On_Map = new Timer(4000);
 
         public bool perso = false;
         public int yLista = 8;
@@ -108,12 +108,12 @@ namespace Plants_Vs_Zombies
                                           new ZombieSegnaletico(0f),
                                           new ZombieSecchione(0f) };
 
-        public List<Zombie>[] Mappa_zombie = new List<Zombie>[5];
+        public List<Zombie>[,] Mappa_zombie = new List<Zombie>[11, 5];
 
-        Timer Zombie_On = new Timer(5000); // velocita di spawn
-        Timer Vel_Zombie = new Timer(5000); // tempo per aumentare la velocita di spawn
+        public Timer Zombie_On = new Timer(5000); // velocita di spawn
+        public Timer Vel_Zombie = new Timer(5000); // tempo per aumentare la velocita di spawn
 
-        Timer Diff = new Timer(30000); // tempo per cambiare gli zombie che spawnano
+        public Timer Diff = new Timer(30000); // tempo per cambiare gli zombie che spawnano
         public int difficolta = 0; // zombie che spawnano
 
         public int Difficolta
@@ -181,8 +181,9 @@ namespace Plants_Vs_Zombies
             Pausa.Finestra = Finestra;
             Pausa.gioco = this;
 
-            for (int i = 0; i < 5; i++)
-                Mappa_zombie[i] = new List<Zombie>();
+            for (int y = 0; y < 5; y++)
+                for (int x = 0; x < 11; x++)
+                    Mappa_zombie[x, y] = new List<Zombie>();
 
             // Timer
             {
@@ -218,17 +219,7 @@ namespace Plants_Vs_Zombies
                     Finestra.MouseButtonPressed -= MouseClick;
                     Finestra.MouseMoved -= MouseMoved;
 
-                    Zombie_On.Stop();
-                    Sun_On_Map.Stop();
-                    Vel_Zombie.Stop();
-                    Diff.Stop();
-
                     Pausa.pausa();
-
-                    Zombie_On.Start();
-                    Sun_On_Map.Start();
-                    Vel_Zombie.Start();
-                    Diff.Start();
 
                     Finestra.MouseButtonPressed -= Pausa.MouseClick;
 
@@ -240,19 +231,9 @@ namespace Plants_Vs_Zombies
                     Finestra.MouseButtonPressed -= MouseClick;
                     Finestra.MouseMoved-= MouseMoved;
 
-                    Zombie_On.Stop();
-                    Sun_On_Map.Stop();
-                    Vel_Zombie.Stop();
-                    Diff.Stop();
-
                     Finale.Fine();
 
                     Finestra.MouseButtonPressed -= Finale.MouseClick;
-
-                    Zombie_On.Start();
-                    Sun_On_Map.Start();
-                    Vel_Zombie.Start();
-                    Diff.Start();
 
                     Finestra.MouseButtonPressed += MouseClick;
                     Finestra.MouseMoved += MouseMoved;
@@ -296,9 +277,9 @@ namespace Plants_Vs_Zombies
                 }
 
                 // Zombi
-                for (int i = 0; i < 5; i++)
-                    while (Mappa_zombie[i].Count > 0)
-                        Mappa_zombie[i][0].Vita = 0;
+                foreach (List<Zombie> l in Mappa_zombie)
+                    while (l.Count > 0)
+                        l[0].Vita = -999;
 
                 // Monete
                 while (Moneta.monete.Count() > 0)
@@ -343,6 +324,7 @@ namespace Plants_Vs_Zombies
         }
         public void MouseClick(object sender, MouseButtonEventArgs e)
         {
+            Logger.WriteLine(e.X + " " + e.Y, 6);
             x = e.X;
             y = e.Y;
 
@@ -512,10 +494,10 @@ namespace Plants_Vs_Zombies
             {
                 lock (LockZombie)
                 {
-                    for (int i = 0; i < 5; i++)
-                        for (int j = 0; j < Mappa_zombie[i].Count; j++)
-                            if (Mappa_zombie[i][j] != null)
-                                Finestra.Draw(Mappa_zombie[i][j].sprite);
+                    foreach (List<Zombie> l in Mappa_zombie)
+                        foreach (Zombie z in l)
+                            if (z != null)
+                                Finestra.Draw(z.sprite);
                 }
             }
             // Disegno delle immagini lista

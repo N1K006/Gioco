@@ -133,6 +133,13 @@ namespace Plants_Vs_Zombies
             get => disponibile;
             set => disponibile = value;
         }
-        public override void Stop() { }
+        public override void Stop() 
+        {
+            fuoco.Stop();
+        }
+        public override void Start()
+        {
+            fuoco.Start();
+        }
     }
 }

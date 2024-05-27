@@ -71,17 +71,15 @@ namespace Plants_Vs_Zombies
         private void Attack_On_Elapsed(object sender, ElapsedEventArgs e)
         {
             lock (gioco.LockZombie)
-                for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
+                foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y])
                 {
-                    Zombie z = gioco.Mappa_zombie[Y][i];
-                    if (z.sprite.Position.X <= pianta.Position.X + pianta.Texture.Size.X * pianta.Scale.X + 30 && z.sprite.Position.X >= pianta.Position.X + 10)
+                    lock (z.LockVita)
+                    {
                         lock (z.LockVita)
-                        {
-                            lock (z.LockVita)
-                                z.Vita -= danno;
-                            lock (z.LockVel)
-                                z.rallentamenti.Add(new Rallentamento(50, 1000, z));
-                        }
+                            z.Vita -= danno;
+                        lock (z.LockVel)
+                            z.rallentamenti.Add(new Rallentamento(50, 1000, z));
+                    }
                 }
         }
 
@@ -116,6 +114,10 @@ namespace Plants_Vs_Zombies
         public override void Stop()
         {
             Attack_On.Stop();
+        }
+        public override void Start()
+        {
+            Attack_On.Start();
         }
     }
 }

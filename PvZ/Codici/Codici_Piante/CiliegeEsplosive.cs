@@ -20,7 +20,15 @@ namespace Plants_Vs_Zombies
         public override int Vita
         {
             get => 1;
-            set => vita = 1;
+            set 
+            {
+                if (value == -999)
+                {
+                    esplodi.Stop();
+                    esplodi.Close();
+                    base.Vita = 0;
+                }
+            }
         }
 
         public CiliegeEsplosive(int x, int y) : base(x, y)
@@ -75,44 +83,38 @@ namespace Plants_Vs_Zombies
         void esplodi_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (Y > 0) // fila sopra
-            {
                 lock (gioco.LockZombie)
                 {
-                    for (int i = 0; i < gioco.Mappa_zombie[Y - 1].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y - 1][i].sprite.Position.X - pianta.Position.X) < 200)
-                        {
-                            gioco.Mappa_zombie[Y - 1][i].Vita = -999;
-                            i--;
-                        }
+                    while (gioco.Mappa_zombie[X, Y - 1].Count > 0)
+                        gioco.Mappa_zombie[X, Y - 1][0].Vita = -999;
+                    while (gioco.Mappa_zombie[X + 1, Y - 1].Count > 0)
+                        gioco.Mappa_zombie[X + 1, Y - 1][0].Vita = -999;
+                    while (gioco.Mappa_zombie[X + 2, Y - 1].Count > 0)
+                        gioco.Mappa_zombie[X + 2, Y - 1][0].Vita = -999;
                 }
-            }
 
             lock (gioco.LockZombie)
             {
-                for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
-                    if (Math.Abs(gioco.Mappa_zombie[Y][i].sprite.Position.X - pianta.Position.X) < 200)
-                    {
-                        gioco.Mappa_zombie[Y][i].Vita = -999;
-                        i--;
-                    }
+                while (gioco.Mappa_zombie[X, Y].Count > 0)
+                    gioco.Mappa_zombie[X, Y][0].Vita = -999;
+                while (gioco.Mappa_zombie[X + 1, Y].Count > 0)
+                    gioco.Mappa_zombie[X + 1, Y][0].Vita = -999;
+                while (gioco.Mappa_zombie[X + 2, Y].Count > 0)
+                    gioco.Mappa_zombie[X + 2, Y][0].Vita = -999;
             }
 
             if (Y < 4) // fila sotto
             {
-                lock (gioco.LockZombie)
-                {
-                    for (int i = 0; i < gioco.Mappa_zombie[Y + 1].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y + 1][i].sprite.Position.X - pianta.Position.X) < 200)
-                        {
-                            gioco.Mappa_zombie[Y + 1][i].Vita = -999;
-                            i--;
-                        }
-                }
+                while (gioco.Mappa_zombie[X, Y + 1].Count > 0)
+                    gioco.Mappa_zombie[X, Y + 1][0].Vita = -999;
+                while (gioco.Mappa_zombie[X + 1, Y + 1].Count > 0)
+                    gioco.Mappa_zombie[X + 1, Y + 1][0].Vita = -999;
+                while (gioco.Mappa_zombie[X + 2, Y + 1].Count > 0)
+                    gioco.Mappa_zombie[X + 2, Y + 1][0].Vita = -999;
             }
-            
-            base.Vita = 0;
-            Stop();
+
             new Boom(pianta.Position);
+            Vita = 0;
         }
 
         public override CiliegeEsplosive GetInstace()
@@ -128,7 +130,10 @@ namespace Plants_Vs_Zombies
         public override void Stop()
         {
             esplodi.Stop();
-            esplodi.Close();
+        }
+        public override void Start()
+        {
+            esplodi.Start();
         }
     }
 }

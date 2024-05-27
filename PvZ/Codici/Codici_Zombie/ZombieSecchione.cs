@@ -29,7 +29,7 @@ namespace Plants_Vs_Zombies
             {
                 lock (gioco.LockZombie)
                 {
-                    gioco.Mappa_zombie[y].Add(this);
+                    gioco.Mappa_zombie[10, y].Add(this);
                 }
 
                 fila = y;
@@ -85,23 +85,21 @@ namespace Plants_Vs_Zombies
 
         private void Mov_Zombie_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (sprite.Position.X >= 20)
+            lock (LockVel)
             {
-                lock (LockVel)
+                sprite.Position -= new Vector2f(rallentamenti.Count > 0 ? Vel / 100 * (100 - RallMax()) : Vel, 0);
+            }
+            lock (gioco.LockZombie)
+            {
+                if (sprite.Position.X >= 172)
+                    X = (int)((sprite.Position.X - 172) / 81.227);
+                else
                 {
-                    sprite.Position -= new Vector2f(rallentamenti.Count > 0 ? Vel / 100 * (100 - RallMax()) : Vel, 0);
+                    Mov_Zombie.Stop();
+                    gioco.fase = 2;
                 }
             }
-            else
-            {
-                lock (gioco.LockZombie)
-                {
-                    gioco.Mappa_zombie[fila].Remove(this);
-                }
-                ((Timer)sender).Stop();
-                gioco.perso = true;
-                gioco.Reset();
-            }
+
             int RallMax()
             {
                 int r;
@@ -157,6 +155,16 @@ namespace Plants_Vs_Zombies
         public override ZombieSecchione GetInstance(int y)
         {
             return new ZombieSecchione(y);
+        }
+        public override void Stop()
+        {
+            mangia.Stop();
+            Mov_Zombie.Stop();
+        }
+        public override void Start()
+        {
+            mangia.Start();
+            Mov_Zombie.Start();
         }
     }
 }

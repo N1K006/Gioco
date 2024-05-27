@@ -125,15 +125,19 @@ namespace Plants_Vs_Zombies
         {
             preso = true;
             gioco.n_soli += value_sun;
-            soli.Remove(this);
-            soliPresi.Add(this);
+            lock (gioco.LockSoli)
+            {
+                soli.Remove(this);
+                soliPresi.Add(this);
+            }
         }
 
         public void Stop()
         {
             Sun_Off.Stop();
             Mov_Sun.Stop();
-            soli.Remove(this);
+            lock (gioco.LockSoli)
+                soli.Remove(this);
         }
     }
 }

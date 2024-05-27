@@ -2,6 +2,7 @@
 using SFML.Graphics;
 using SFML.System;
 using System.Timers;
+using System.Collections.Generic;
 
 namespace Plants_Vs_Zombies
 {
@@ -20,7 +21,15 @@ namespace Plants_Vs_Zombies
         public override int Vita
         {
             get => 1;
-            set => vita = 1;
+            set
+            {
+                if (value == -999)
+                {
+                    brucia.Stop();
+                    brucia.Close();
+                    base.Vita = 0;
+                }
+            }
         }
 
         public Peperoncino(int x, int y) : base(x, y)
@@ -76,12 +85,14 @@ namespace Plants_Vs_Zombies
         void brucia_Elapsed(object sender, ElapsedEventArgs e)
         {
             lock (gioco.LockZombie)
-                while (gioco.Mappa_zombie[Y].Count > 0)
-                    gioco.Mappa_zombie[Y][0].Vita = -999;
+                for (int i = 0; i < 11; i++)
+                {
+                    while (gioco.Mappa_zombie[i, Y].Count > 0)
+                        gioco.Mappa_zombie[i, Y][0].Vita = -999;
+                }
 
-            base.Vita = 0;
-            Stop();
             new Boom(pianta.Position);
+            Vita = 0;
         } 
 
         public override Peperoncino GetInstace()
@@ -98,7 +109,11 @@ namespace Plants_Vs_Zombies
         public override void Stop()
         {
             brucia.Stop();
-            brucia.Close();
+        }
+
+        public override void Start()
+        {
+            brucia.Start();
         }
     }
 }

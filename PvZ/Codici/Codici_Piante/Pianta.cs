@@ -54,6 +54,6 @@ namespace Plants_Vs_Zombies
 		abstract public bool Disponibile { get; set; }
 		abstract public void DisegnaLista(Vector2f posizione, Vector2f scala);
         abstract public void Stop();
-        //abstract public void Riprendi();
+        abstract public void Start();
     }
 }

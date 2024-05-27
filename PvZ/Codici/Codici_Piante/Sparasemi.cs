@@ -75,12 +75,17 @@ namespace Plants_Vs_Zombies
             bool spara = false;
             lock (gioco.LockZombie)
             {
-                for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
+                for (int i = 0; i < 11 && !spara; i++)
                 {
-                    Zombie z = gioco.Mappa_zombie[Y][i];
-                    if (z != null)
-                        if (z.sprite.Position.X >= pianta.Position.X)
-                            spara = true;
+                    foreach (Zombie z in gioco.Mappa_zombie[i, Y])
+                    {
+                        if (z != null)
+                            if (z.sprite.Position.X >= pianta.Position.X)
+                            {
+                                spara = true;
+                                break;
+                            }
+                    }
                 }
             }
             return spara;
@@ -128,6 +133,10 @@ namespace Plants_Vs_Zombies
         public override void Stop()
         {
             Seme_On.Stop();
+        }
+        public override void Start()
+        {
+            Seme_On.Start();
         }
     }
 }

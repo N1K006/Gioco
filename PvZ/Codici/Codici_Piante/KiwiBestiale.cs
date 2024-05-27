@@ -124,23 +124,28 @@ namespace Plants_Vs_Zombies
         {
             return new KiwiBestiale();
         }
-        public override void Stop() { }
         void Attack_On_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (Y > 1 && fase == 3) // due file sopra
             {
                 lock (gioco.LockZombie)
                 {
-                    for (int i = 0; i < gioco.Mappa_zombie[Y - 2].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y - 2][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
-                        {
-                            bool morto = false;
-                            if (gioco.Mappa_zombie[Y - 2][i].Vita - (danno * fase) <= 0)
-                                morto = true;
-                            gioco.Mappa_zombie[Y - 2][i].Vita -= danno * fase;
-                            if (morto)
-                                i--;
-                        }
+                    if (X > 0)
+                        foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y - 2])
+                            z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X, Y - 2])
+                        z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y - 2])
+                        z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y - 2])
+                        z.Vita -= danno * fase;
+
+                    if (X < 8)
+                        foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y - 2])
+                            z.Vita -= danno * fase;
                 }
             }
 
@@ -148,47 +153,67 @@ namespace Plants_Vs_Zombies
             {
                 lock (gioco.LockZombie)
                 {
-                    for (int i = 0; i < gioco.Mappa_zombie[Y - 1].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y - 1][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
-                        {
-                            bool morto = false;
-                            if (gioco.Mappa_zombie[Y - 1][i].Vita - (danno * fase) <= 0)
-                                morto = true;
-                            gioco.Mappa_zombie[Y - 1][i].Vita -= danno * fase;
-                            if (morto)
-                                i--;
-                        }
+                    if (fase == 3 && X > 0)
+                        foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y - 1])
+                            z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X, Y - 1])
+                        z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y - 1])
+                        z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y - 1])
+                        z.Vita -= danno * fase;
+
+                    if (fase == 3 && X < 8)
+                        foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y - 1])
+                            z.Vita -= danno * fase;
                 }
             }
 
             lock (gioco.LockZombie)
             {
-                for (int i = 0; i < gioco.Mappa_zombie[Y].Count; i++)
-                    if (Math.Abs(gioco.Mappa_zombie[Y][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
-                    {
-                        bool morto = false;
-                        if (gioco.Mappa_zombie[Y][i].Vita - (danno * fase) <= 0)
-                            morto = true;
-                        gioco.Mappa_zombie[Y][i].Vita -= danno * fase;
-                        if (morto)
-                            i--;
-                    }
+                if (fase == 3 && X > 0)
+                    foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y])
+                        z.Vita -= danno * fase;
+
+                if (fase > 1)
+                    foreach (Zombie z in gioco.Mappa_zombie[X, Y])
+                        z.Vita -= danno * fase;
+
+                foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y])
+                    z.Vita -= danno * fase;
+
+                if (fase > 1)
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y])
+                        z.Vita -= danno * fase;
+
+                if (fase == 3 && X < 8)
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y])
+                        z.Vita -= danno * fase;
             }
 
             if (Y < 4 && fase > 1) // fila sotto
             {
                 lock (gioco.LockZombie)
                 {
-                    for (int i = 0; i < gioco.Mappa_zombie[Y + 1].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y + 1][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
-                        {
-                            bool morto = false;
-                            if (gioco.Mappa_zombie[Y + 1][i].Vita - (danno * fase) <= 0)
-                                morto = true;
-                            gioco.Mappa_zombie[Y + 1][i].Vita -= danno * fase;
-                            if (morto)
-                                i--;
-                        }
+                    if (fase == 3 && X > 0)
+                        foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y + 1])
+                            z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X, Y + 1])
+                        z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y + 1])
+                        z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y + 1])
+                        z.Vita -= danno * fase;
+
+                    if (fase == 3 && X < 8)
+                        foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y + 1])
+                            z.Vita -= danno * fase;
                 }
             }
 
@@ -196,18 +221,32 @@ namespace Plants_Vs_Zombies
             {
                 lock (gioco.LockZombie)
                 {
-                    for (int i = 0; i < gioco.Mappa_zombie[Y + 2].Count; i++)
-                        if (Math.Abs(gioco.Mappa_zombie[Y + 2][i].sprite.Position.X - pianta.Position.X) < 100 * fase)
-                        {
-                            bool morto = false;
-                            if (gioco.Mappa_zombie[Y + 2][i].Vita - (danno * fase) <= 0)
-                                morto = true;
-                            gioco.Mappa_zombie[Y + 2][i].Vita -= danno * fase;
-                            if (morto)
-                                i--;
-                        }
+                    if (X > 0)
+                        foreach (Zombie z in gioco.Mappa_zombie[X - 1, Y + 2])
+                            z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X, Y + 2])
+                        z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 1, Y + 2])
+                        z.Vita -= danno * fase;
+
+                    foreach (Zombie z in gioco.Mappa_zombie[X + 2, Y + 2])
+                        z.Vita -= danno * fase;
+
+                    if (X < 8)
+                        foreach (Zombie z in gioco.Mappa_zombie[X + 3, Y + 2])
+                            z.Vita -= danno * fase;
                 }
             }
+        }
+        public override void Stop()
+        {
+            Attack_On.Stop();
+        }
+        public override void Start()
+        {
+            Attack_On.Start();
         }
     }
 }
