@@ -68,7 +68,8 @@ namespace Plants_Vs_Zombies
             if (preso)
             {
                 if (moneta.Position.Y - Gioco.C_M.Position.Y < 8 && moneta.Position.X - Gioco.C_M.Position.X < 8)
-                    monetePrese.Remove(this);
+                    lock (gioco.LockMonete)
+                        monetePrese.Remove(this);
                 float x = moneta.Position.X - Gioco.C_M.Position.X;
                 float y = moneta.Position.Y - Gioco.C_M.Position.Y;
                 mov = new Vector2f(x / Convert.ToSingle(Math.Sqrt(x * x + y * y)), y / Convert.ToSingle(Math.Sqrt(x * x + y * y)));
@@ -89,19 +90,19 @@ namespace Plants_Vs_Zombies
 
         public void Preso()
         {
-            lock (gioco.LockMonete)
-            {
                 preso = true;
                 Program.monete += valore;
+            lock (gioco.LockMonete)
                 monete.Remove(this);
+            lock (gioco.LockMonete)
                 monetePrese.Add(this);
-            }
         }
         public void Stop()
         {
             Muovi.Stop();
             Elimina.Stop();
-            monete.Remove(this);
+            lock (gioco.LockMonete)
+                monete.Remove(this);
         }
     }
 }
